@@ -1,42 +1,71 @@
 PShape usa;
-PShape state;
-String [] Obama  = { "HI", "RI", "CT", "MA", "ME", "NH", "VT", "NY", "NJ",
-   "FL", "NC", "OH", "IN", "IA", "CO", "NV", "PA", "DE", "MD", "MI",
-   "WA", "CA", "OR", "IL", "MN", "WI", "DC", "NM", "VA" };
- 
-String [] McCain = { "AK", "GA", "AL", "TN", "WV", "KY", "SC", "WY", "MT",
-   "ID", "TX", "AZ", "UT", "ND", "SD", "NE", "MS", "MO", "AR", "OK",
-   "KS", "LA" };
- 
-void setup() {
-  size(950, 600);
-  // The file Blank_US_Map.svg can be found at Wikimedia Commons
-  usa = loadShape("http://upload.wikimedia.org/wikipedia/commons/3/32/Blank_US_Map.svg");
-  smooth(); // Improves the drawing quality of the SVG
+PShape minnesota;
+
+float mapGeoLeft   =  -128.63;          // Longitude 125 degrees west
+float mapGeoRight  =  -64.36;          // Longitude 153 degrees east
+float mapGeoTop    =  51.99;          // Latitude 72 degrees north.
+float mapGeoBottom =  25.01;          // Latitude 56 degrees south.
+
+//+48.987386 is the northern most latitude 
+//+18.005611 is the southern most latitude 
+//-124.626080 is the west most longitude 
+//-62.361014 is a east most longitude 
+                         
+float mapScreenWidth,mapScreenHeight;  // Dimension of map in pixels.
+
+void setup()
+{
+  // svg size 959 × 593
+  size(959,593);
+  smooth();
   noLoop();
+  usa   = loadShape("US_Map.svg");
+  minnesota = usa.getChild("HI");
+  //  usa.scale(2);
+  smooth();
+  mapScreenWidth  = width;
+  mapScreenHeight = height;
 }
- 
-void draw() {
+
+void draw()
+{
   background(255);
   // Draw the full map
-  shape(usa, 0, 0);
-  // Blue denotes states won by Obama
-  statesColoring(Obama , color(0, 0, 255));
-  // Red  denotes states won by McCain
-  statesColoring(McCain, color(255, 0, 0));
-  // Save the map as image
-  saveFrame("map output.png");
+  shape(usa);
+  
+  // Disable the colors found in the SVG file
+  minnesota.disableStyle();
+  // Set our own coloring
+  fill(153, 0, 0);
+  noStroke();
+  // Draw a single state
+  shape(minnesota);  // Buckeyes!
+  
+  fill(180,120,120);
+  strokeWeight(0.5);
+  
+  PVector p = geoToPixel(new PVector(-74,40.71));        // New York
+  ellipse(p.x,p.y,10,10);
+  p = geoToPixel(new PVector(-93.2,44.9));        // Minneapolis
+  ellipse(p.x,p.y,10,10);
+  p = geoToPixel(new PVector(-96.7,32.77));        // Dallas
+  ellipse(p.x,p.y,10,10); 
+  p = geoToPixel(new PVector(-122.33,47.61));        // Seattle
+  ellipse(p.x,p.y,10,10); 
 }
- 
-void statesColoring(String[] states, int c){
-  for (int i = 0; i < states.length; ++i) {
-    PShape state = usa.getChild(states[i]);
-    // Disable the colors found in the SVG file
-    state.disableStyle();
-    // Set our own coloring
-    fill(c);
-    noStroke();
-    // Draw a single state
-    shape(state, 0, 0);
-  }
+
+// Converts screen coordinates into geographical coordinates. 
+// Useful for interpreting mouse position.
+public PVector pixelToGeo(PVector screenLocation)
+{
+    return new PVector(mapGeoLeft + (mapGeoRight-mapGeoLeft)*(screenLocation.x)/mapScreenWidth,
+                       mapGeoTop - (mapGeoTop-mapGeoBottom)*(screenLocation.y)/mapScreenHeight);
+}
+
+// Converts geographical coordinates into screen coordinates.
+// Useful for drawing geographically referenced items on screen.
+public PVector geoToPixel(PVector geoLocation)
+{
+    return new PVector(mapScreenWidth*(geoLocation.x-mapGeoLeft)/(mapGeoRight-mapGeoLeft),
+                       mapScreenHeight - mapScreenHeight*(geoLocation.y-mapGeoBottom)/(mapGeoTop-mapGeoBottom));
 }
