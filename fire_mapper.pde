@@ -52,6 +52,17 @@ void draw()
   ellipse(p.x,p.y,10,10); 
   p = geoToPixel(new PVector(-122.33,47.61));        // Seattle
   ellipse(p.x,p.y,10,10); 
+  
+  p = new PVector(mouseX, mouseY);
+  for(int i=0;i<usa.getChildCount();i++){
+//    if(usa.getChild(i).contains(p.x,p.y)){
+       println(usa.getChild(i).height);
+       fill(0,100,255,250);
+       noStroke();
+       usa.getChild(i).disableStyle();
+       shape(usa.getChild(i));
+    }
+//  }
 }
 
 // Converts screen coordinates into geographical coordinates. 
