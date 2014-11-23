@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <title>CSCI 5609 - Project</title>
+    
+    <link href="jqvmap/jqvmap/jqvmap.css" media="screen" rel="stylesheet" type="text/css" />
+    
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript"></script>
+    <script src="jqvmap/jqvmap/jquery.vmap.js" type="text/javascript"></script>
+    <script src="jqvmap/jqvmap/maps/jquery.vmap.usa.js" type="text/javascript"></script>
+    <script src="processing.js"></script>
+	<script type="text/javascript">
+	var currState = "";
+	var selectedState = "";
+	jQuery(document).ready(function() {
+		jQuery('#vmap').vectorMap({
+		    map: 'usa_en',
+		    backgroundColor: '#666666',
+		    hoverColor: '#FF7B0D',
+		    selectedColor: '#0097B2',
+		    enableZoom: false,
+		    showTooltip: true,
+		    selectedRegion: 'MO',
+		    onRegionOver: function(event, code, region)
+		    {
+		    	currState = region;
+		    },
+		    onRegionClick: function(event, code, region)
+		    {
+		    	selectedState = region;
+		    	$('#vmap').vectorMap('select', code);
+		    },
+		});
+	});
+	</script>
+  </head>
+  <body>
+    <div id="vmap" style="width: 600px; height: 400px;"></div>
+    <canvas data-processing-sources="code.pde"></canvas>
+  </body>
+</html>
