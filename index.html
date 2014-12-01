@@ -10,9 +10,12 @@
     <script src="jqvmap/jqvmap/jquery.vmap.js" type="text/javascript"></script>
     <script src="jqvmap/jqvmap/maps/jquery.vmap.usa.js" type="text/javascript"></script>
     <script src="processing.js"></script>
+    <script src="jquery.csv-0.71.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
 	<script type="text/javascript">
 	var currState = "";
 	var selectedState = "";
+
 	jQuery(document).ready(function() {
 		jQuery('#vmap').vectorMap({
 		    map: 'usa_en',
@@ -33,10 +36,93 @@
 		    },
 		});
 	});
+
+	// Google reverse geocoding stuff
+	var geocoder;
+	var map;
+	var latsLons = [];
+	var byState = [];
+	var infowindow = new google.maps.InfoWindow();
+	var marker;
+	var data;
+	var CSV_ENUM = {
+	  LAT : {value: 0, name: "Lat", code: "La"}, 
+	  LON: {value: 1, name: "Lon", code: "Lo"}, 
+	};
+
+	function initialize() {
+	  geocoder = new google.maps.Geocoder();
+	  var latlng = new google.maps.LatLng(40.730885,-73.997383);
+	  var mapOptions = {
+	    zoom: 8,
+	    center: latlng,
+	    mapTypeId: 'roadmap'
+	  }
+	  map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+	}
+
+	function codeLatLng(lat, lon) {
+	  var latlng = new google.maps.LatLng(lat, lon);
+	  geocoder.geocode({'latLng': latlng}, function(results, status) {
+	    if (status == google.maps.GeocoderStatus.OK) {
+	      if (results[1]) {
+	      	result=results[1].address_components;
+		      var info=[];
+		      for(var i=0;i<result.length;++i)
+		      {
+		          if(result[i].types[0]=="administrative_area_level_1"){
+		          	byState.push(result[i].short_name + ", ")
+		          }
+		          console.log(byState);
+          	  }
+	      } else {
+	        alert('No results found');
+	      }
+	  }
+      else if (status === google.maps.GeocoderStatus.OVER_QUERY_LIMIT) {    
+        setTimeout(function() {
+            codeLatLng(lat,lon);
+        }, 200);
+	    } else {
+	      alert('Geocoder failed due to: ' + status);
+	    }
+	  });
+	}
+
+	function binStates(){
+		for (i = 0; i < data.length; i++){
+			codeLatLng(data[i][0],data[i][1]);
+		}
+		window.alert(byState[0]);
+	}
+
+	$.ajax({
+	    url: "data/modis_2001.csv",
+	    async: false,
+	    success: function (csvd) {
+	        data = $.csv2Array(csvd);
+	    },
+	    dataType: "text",
+	    complete: function () {
+	        // call a function on complete 
+	        // for(i = 1; i < data.length; i++){ //data.length
+	        // 	console.log("modis " + i)
+	        // 	//latsLons.push([data[i][CSV_ENUM.LAT.value],  data[i][CSV_ENUM.LON.value]]);
+	        // 	codeLatLng(data[i][CSV_ENUM.LAT.value], data[i][CSV_ENUM.LON.value]);
+	        // }
+	    }
+	});
+
+	google.maps.event.addDomListener(window, 'load', initialize);
 	</script>
   </head>
   <body>
     <div id="vmap" style="width: 600px; height: 400px;"></div>
+     <div id="panel">
+      <input id="latlng" type="text" value="40.714224,-73.961452">
+      <input type="button" value="Reverse Geocode" onclick="binStates()">
+    </div>
+    <div id="map-canvas"></div>
     <canvas data-processing-sources="code.pde"></canvas>
   </body>
 </html>
