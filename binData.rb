@@ -36,7 +36,7 @@ def in_state(lat, lon)
 	state
 end
 
-def process_data(l_range, h_range, name)
+def process_data(l_range, h_range)
 	binned_states = []
 	i = l_range
 	while i < h_range do
@@ -47,15 +47,11 @@ def process_data(l_range, h_range, name)
 	end
 	$states = binned_states
 end
-
-puts "Started At #{Time.now}"
-t1=Thread.new{process_data(1, $data.length, "modis1")}
-# t2=Thread.new{process_data(($data.length/2.0).ceil, $data.length, "modis2")}
+now = Time.now
+puts "Started At #{now}"
+# Multithread if needed
+t1=Thread.new{process_data(1, $data.length)}
 t1.join
-# t2.join
-# $data1 = CSV.read("modis1.csv")
-# $data2 = CSV.read("modis2.csv")
-# $states = $data1.push($data2)
 # Save cvs file
 CSV.open("#{ARGV[1].chomp('jsonp')}.csv", "w+b") do |csv|
 	i = 0
@@ -69,3 +65,4 @@ end
 
 csv_to_json ARGV[0], ARGV[1]
 puts "End at #{Time.now}"
+puts "Time elapsed: #{Time.now - now}"

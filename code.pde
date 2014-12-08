@@ -15,8 +15,8 @@ void drawGrid(int x, int y, int w, int h) {
 	rect(x, y, w, h);
 }
  
-int num = 1;
-int test = 0;
+int num;
+
 void setup() {
   size(600, 400);
 } 
@@ -32,11 +32,14 @@ void draw(){
   drawGrid(200,200,50,50);
 }
 
-void keyPressed(){
-  if (key == ' ') {
+void mouseClicked(){
+    // if(javascript != null){
+    //   num = javascript.findStates(selectedState);
+    // }
+}
+
+void javaClicked(){
     if(javascript != null){
       num = javascript.findStates(selectedState);
-      test = 2;
     }
-  } 
 }

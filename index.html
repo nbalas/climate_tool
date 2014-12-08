@@ -14,11 +14,11 @@
 	<script type="text/javascript">
 	var currState = "";
 	var selectedState = "";
-
+	var pjs;
 	var bound = false;
 
 	function bindJavascript() {
-	 var pjs = Processing.getInstanceById('code');
+	 pjs = Processing.getInstanceById('code');
 	 if(pjs!=null) {
 	   pjs.bindJavascript(this);
 	   bound = true;
@@ -27,6 +27,12 @@
 	}
 
 	bindJavascript();
+
+	function sendClick() {
+	 if(pjs!=null) {
+	   pjs.javaClicked();
+	 }
+	}
 
 	function findStates(state){
 	  var num = 0;
@@ -56,6 +62,7 @@
 		    {
 		    	selectedState = region;
 		    	$('#vmap').vectorMap('select', code);
+		    	sendClick();
 		    },
 		});
 	});
