@@ -10,7 +10,7 @@
     <script src="jqvmap/jqvmap/maps/jquery.vmap.usa.js" type="text/javascript"></script>
     <script type="text/javascript" src="processing.js"></script>
     <script src="jquery.csv-0.71.js"></script>
-	<script src="file:data/modis_2001.jsonp"></script>
+	<script src="file:data/modis_2001_states.jsonp"></script>
 	<script type="text/javascript">
 	var currState = "";
 	var selectedState = "";
@@ -30,8 +30,8 @@
 
 	function findStates(state){
 	  var num = 0;
-	  for(var entry in modis_2001){
-	    if(modis_2001[entry].State == state){
+	  for(var entry in modis_2001_states){
+	    if(modis_2001_states[entry].State == state){
 	      num++;
 	    }
 	  }
