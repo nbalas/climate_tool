@@ -1,7 +1,14 @@
 require "geocoder"
 require "./csv_to_json"
 
-$data = CSV.read("data/modis_2001.csv")
+# Sample input: ruby binData.rb data/modis_2001_states.csv data/modis_2001_states.jsonp
+if ARGV.size != 2
+  puts 'Usage: csv_to_json input_file.csv output_file.jsonp'
+  puts 'This script uses the first line of the csv file as the keys for the JSON properties of the objects'
+  exit(1)
+end
+
+$data = CSV.read(ARGV[0])
 p $data[1][0].to_f
 
 $arr_of_arrs = CSV.read("data/us_states.csv")
@@ -50,7 +57,7 @@ t1.join
 # $data2 = CSV.read("modis2.csv")
 # $states = $data1.push($data2)
 # Save cvs file
-CSV.open("data/modis_2001_states.csv", "w+b") do |csv|
+CSV.open("#{ARGV[1].chomp('jsonp')}.csv", "w+b") do |csv|
 	i = 0
 	csv << [$data[i][0], $data[i][1], $data[i][2], $data[i][3], $data[i][4], $data[i][5], $data[i][6], $data[i][7], $data[i][8], $data[i][9], $data[i][10], $data[i][11], "State"]
 	i = 1
@@ -60,5 +67,5 @@ CSV.open("data/modis_2001_states.csv", "w+b") do |csv|
 	end
 end
 
-csv_to_json "data/modis_2001_states.csv", "data/modis_2001_states.jsonp"
+csv_to_json ARGV[0], ARGV[1]
 puts "End at #{Time.now}"
