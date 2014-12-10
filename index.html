@@ -4,16 +4,20 @@
   <head>
     <title>CSCI 5609 - Project</title>
     
-    <link href="jqvmap/jqvmap/jqvmap.css" media="screen" rel="stylesheet" type="text/css" />
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript"></script>
-    <script src="jqvmap/jqvmap/jquery.vmap.js" type="text/javascript"></script>
-    <script src="jqvmap/jqvmap/maps/jquery.vmap.usa.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="jquery-jvectormap-2.0.1.css" type="text/css" media="screen"/>
+    <script src="jquery.min.js" type="text/javascript"></script>
+    <script src="jquery-jvectormap-2.0.1.min.js"></script>
+    <script src="jquery-jvectormap-us-lcc-en.js"></script>
+    <script src="stateLookup.js"></script>
     <script type="text/javascript" src="processing.js"></script>
     <script src="jquery.csv-0.71.js"></script>
 	<script src="file:data/modis_2001_states.jsonp"></script>
 	<script type="text/javascript">
+	var states = new Array(51);
 	var currState = "";
 	var selectedState = "";
+	var map;
 	var pjs;
 	var bound = false;
 
@@ -43,34 +47,34 @@
 	  }
 	  return num;
 	}
-
-
-	jQuery(document).ready(function() {
-		jQuery('#vmap').vectorMap({
-		    map: 'usa_en',
-		    backgroundColor: '#666666',
-		    hoverColor: '#FF7B0D',
-		    selectedColor: '#0097B2',
-		    enableZoom: false,
-		    showTooltip: true,
-		    selectedRegion: 'MO',
-		    onRegionOver: function(event, code, region)
-		    {
-		    	currState = region;
-		    },
-		    onRegionClick: function(event, code, region)
-		    {
-		    	selectedState = region;
-		    	$('#vmap').vectorMap('select', code);
-		    	sendClick();
-		    },
-		});
-	});
 	</script>
   </head>
   <body>
     <div id="vmap" style="width: 600px; height: 400px;"></div>
     <div id="map-canvas"></div>
     <canvas id="code" data-processing-sources="code.pde"></canvas>
+    <script>
+		$(function(){
+		us_map = $('#vmap').vectorMap({
+		    map: 'us_lcc_en',
+		    regionsSelectable: true,
+		    showTooltip: true,
+		    selectedRegion: 'MO',
+		    onRegionOver: function(event, code)
+		    {
+		    	currState = nameLookup[code];
+		    },
+		    onRegionClick: function(event, code)
+		    {
+		    	selectedState = nameLookup[code];
+		    	//$('#vmap').vectorMap('select', code);
+		    	console.log(code);
+		    	if (states[code] == 1) {states[code] = 0;}
+		    	else {states[code] = 1;}
+		    	sendClick();
+		    },
+		});
+	});
+    </script>
   </body>
 </html>
