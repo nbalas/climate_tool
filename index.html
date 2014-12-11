@@ -4,15 +4,18 @@
   <head>
     <title>CSCI 5609 - Project</title>
     
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript"></script>
     <link rel="stylesheet" href="jquery-jvectormap-2.0.1.css" type="text/css" media="screen"/>
-    <script src="jquery.min.js" type="text/javascript"></script>
-    <script src="jquery-jvectormap-2.0.1.min.js"></script>
-    <script src="jquery-jvectormap-us-lcc-en.js"></script>
-    <script src="stateLookup.js"></script>
-    <script src="interaction.js"></script>
-    <script type="text/javascript" src="processing.js"></script>
+    <script src="js/data-modification.js"></script>
+    <script src="js/interaction.js"></script>
+    <script src="js/jquery.min.js" type="text/javascript"></script>
+    <script src="js/jquery-jvectormap-2.0.1.min.js"></script>
+    <script src="js/jquery-jvectormap-us-lcc-en.js"></script>
+    <script src="js/processing.js"></script>
+    <script src="js/stateLookup.js"></script>
+    <script src="js/utilities.js"></script>
+    <script type="javascript" src="js/processing.js"></script>
 	<script src="file:data/modis_2001_states.jsonp"></script>
+
 	<script type="text/javascript">
 	var states = new Array(51);
 	var currState = "";
@@ -24,70 +27,7 @@
 	var pjs;
 	var bound = false;
 
-	function bindJavascript() {
-	 pjs = Processing.getInstanceById('code');
-	 if(pjs!=null) {
-	   pjs.bindJavascript(this);
-	   bound = true;
-	 }
-	 if(!bound) setTimeout(bindJavascript, 125);
-	}
-
 	bindJavascript();
-
-	function sendClick() {
-	 if(pjs!=null) {
-	   pjs.javaClicked();
-	 }
-	}
-
-	function findStates(state){
-	  var num = 0;
-	  for(var entry in modis_2001_states){
-	    if(modis_2001_states[entry].State == state){
-	      num++;
-	    }
-	  }
-	  return num;
-	}
-
-	// EXAMPLE USAGE:
-	// filterDateRange("2001-01-01", "2001-02-01");
-	// returns json object
-	function filterDateRange(start, end){
-	  var num 	   = 0;
-	  var startNum = Date.parse(start);
-	  var endNum   = Date.parse(end);
-	  var newObject = {"max":{}, "min":{}};
-	  var dateNum;
-	  for (var attribute in currentDataset[0]){
-	  	console.log(attribute + ' "hello" ');
-	  	eval('newObject.max.' + attribute + ' = -99999');
-	  	eval('newObject.min.' + attribute + ' = 99999');
-	  }
-	  for(var entry in currentDataset){
-	    dateNum = Date.parse(currentDataset[entry].acq_date);
-	    if(startNum < dateNum && dateNum < endNum){
-	      newObject[entry] = currentDataset[entry];
-	      for(var attribute in currentDataset[entry]){
-	      	eval('newObject.max.' + attribute + ' = Math.max(currentDataset[entry]. ' +attribute + ', newObject.max.' + attribute + ")");
-	      	eval('newObject.min.' + attribute + " = Math.min(currentDataset[entry]. " +attribute + ', newObject.min.' + attribute + ")");
-	      }
-	    }
-	  }
-	  return newObject;
-	}
-
-	// function printJSON(json){
-	// 	for (var entry in json){
-	// 		console.log(json[entry].acq_date);
-	// 	}
-	// 	for (var attr in json.max){
-	// 		console.log(attr);
-	// 		eval('console.log(json.max.' +  attr + ")");
-	// 		eval('console.log(json.min.' +  attr + ")");
-	// 	}
-	// }
 
 	// printJSON(filterDateRange("2001-01-01", "2001-02-01"));
 	</script>
@@ -97,7 +37,7 @@
     <div id="map-canvas"></div>
     <canvas id="code" data-processing-sources="code.pde"></canvas>
     <script>
-		$(function(){
+	$(function(){
 		us_map = $('#vmap').vectorMap({
 		    map: 'us_lcc_en',
 		    regionsSelectable: true,
