@@ -86,6 +86,13 @@ void drawSingleSpiral(int x, int y, int r, int weight) {
   }
 }
 
+void testBoxCreate() {
+  graphBoxes[0] = new graphBox(200,200,50,50);
+  graphBoxes[1] = new graphBox(400,200,50,50);
+  graphBoxes[2] = new graphBox(500,200,50,50);
+  console.log("test box created");
+}
+
 int num;
 
 
@@ -126,7 +133,7 @@ void setup() {
     numberOfDays++;
   }
   console.log("setup complete");
-
+  testBoxCreate();
 }
 
 void draw(){
@@ -141,12 +148,46 @@ void draw(){
   drawLineGraph(100,350, 600, 300);
   drawIntensityBar(100,380, 600, 10);
   //drawSingleSpiral(400, 200, 300, 2);
+
+  //rect(graphBoxes[0].x, graphBoxes[0].y, graphBoxes[0].w, graphBoxes[0].h)
+ for(int i = 0; i<graphBoxes.length() ; i++) {
+    if(graphBoxes[i] != null) {
+        rect(graphBoxes[i].x, graphBoxes[i].y, graphBoxes[i].w, graphBoxes[i].h);
+      }
+    }
+  
 }
 
-void mouseClicked(){
+void mousePressed(){
     // if(javascript != null){
     //   num = javascript.findStates(selectedState);
     // }
+    console.log("clicked at X:" + mouseX + " Y:" + mouseY);
+    for(int i = 0; i<graphBoxes.length() ; i++){
+      if(graphBoxes[i] != null && graphBoxes[i].intersect(mouseX,mouseY)) {
+        graphBoxes[i].locked = true;
+        console.log(i);
+        console.log("intersected box");
+      }
+    }
+}
+
+void mouseReleased(){
+  for(int i = 0; i<graphBoxes.length() ; i++){
+      if(graphBoxes[i] != null) {
+        graphBoxes[i].locked = false;
+      }
+    }
+}
+
+void mouseDragged() {
+  for(int i = 0; i<graphBoxes.length() ; i++){
+      if(graphBoxes[i] != null && graphBoxes[i].locked) {
+        graphBoxes[i].x = mouseX - graphBoxes[i].xOffset;
+        graphBoxes[i].y = mouseY - graphBoxes[i].yOffset;
+      }
+    }
+
 }
 
 void javaClicked(){
