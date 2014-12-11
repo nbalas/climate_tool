@@ -17,6 +17,7 @@
 	var states = new Array(51);
 	var currState = "";
 	var selectedState = "";
+	var currentDataset = modis_2001_states;
 	var map;
 	var pjs;
 	var bound = false;
@@ -47,6 +48,30 @@
 	  }
 	  return num;
 	}
+
+	// EXAMPLE USAGE:
+	// filterDateRange("2001-01-01", "2001-02-01");
+	// returns json object
+	function filterDateRange(start, end){
+	  var num 	   = 0;
+	  var startNum = Date.parse(start);
+	  var endNum   = Date.parse(end);
+	  var newObject = {};
+	  var dateNum;
+	  for(var entry in modis_2001_states){
+	    dateNum = Date.parse(modis_2001_states[entry].acq_date);
+	    if(startNum < dateNum && dateNum < endNum){
+	      newObject[entry] = modis_2001_states[entry];
+	    }
+	  }
+	  return newObject;
+	}
+
+	// function printJSON(json){
+	// 	for (var entry in json){
+	// 		console.log(json[entry].acq_date);
+	// 	}
+	// }
 	</script>
   </head>
   <body>
