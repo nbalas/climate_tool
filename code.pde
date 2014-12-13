@@ -178,6 +178,7 @@ void mousePressed(){
         current.data.selected = true;
         graphBoxes.delete(current.data);
         graphBoxes.add(current.data);
+        break;
       }
       current = current.prev;
     }
