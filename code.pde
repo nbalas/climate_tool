@@ -152,8 +152,8 @@ void draw(){
   fill(color(255,123,13), 128);
   text("Data: " + num + " elements of " + selectedState, 50, 90);
   
-  drawLineGraph(100,350, 600, 300);
-  drawIntensityBar(100,380, 600, 10);
+  // drawLineGraph(100,350, 600, 300);
+  // drawIntensityBar(100,380, 600, 10);
   //drawSingleSpiral(400, 200, 300, 2);
   graphBoxes.each(function(item) {
     fill(color(item.data.r,item.data.g,item.data.b));
