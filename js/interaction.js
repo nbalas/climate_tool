@@ -8,12 +8,13 @@ function graphBox(x,y,w,h) {
 	this.yOffset = 0;
 
 	this.locked = false;
+	this.selected = false;
 
 	this.r = 0;
 	this.g = 0;
 	this.b = 0;
 	this.intersect = function(clickX, clickY) {
-		console.log("calculating intersect");
+		//console.log("calculating intersect");
 		if (clickX > this.x && clickX < this.x+this.w &&
 			clickY > this.y && clickY < this.y+this.h)
 		{
@@ -23,4 +24,5 @@ function graphBox(x,y,w,h) {
 		}
 		else {return false;}
 	}
+
 }

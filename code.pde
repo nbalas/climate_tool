@@ -156,8 +156,10 @@ void draw(){
   // drawIntensityBar(100,380, 600, 10);
   //drawSingleSpiral(400, 200, 300, 2);
   graphBoxes.each(function(item) {
+    if(item.data.selected) {stroke(0, 102, 204);}
     fill(color(item.data.r,item.data.g,item.data.b));
     rect(item.data.x, item.data.y, item.data.w, item.data.h);
+    stroke(0,0,0);
   });
   
 }
@@ -170,11 +172,12 @@ void mousePressed(){
 
     var current = graphBoxes.end;
     while(current !== null) {
+      current.data.selected = false;
       if(current.data.intersect(mouseX,mouseY)) {
         current.data.locked = true;
+        current.data.selected = true;
         graphBoxes.delete(current.data);
         graphBoxes.add(current.data);
-        break;
       }
       current = current.prev;
     }
