@@ -6,7 +6,12 @@ function graphBox(x,y,w,h) {
 	this.z = 0;	//z-coord (layer)
 	this.xOffset = 0;
 	this.yOffset = 0;
+
 	this.locked = false;
+
+	this.r = 0;
+	this.g = 0;
+	this.b = 0;
 	this.intersect = function(clickX, clickY) {
 		console.log("calculating intersect");
 		if (clickX > this.x && clickX < this.x+this.w &&

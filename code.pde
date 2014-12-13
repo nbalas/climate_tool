@@ -86,11 +86,18 @@ void drawSingleSpiral(int x, int y, int r, int weight) {
   }
 }
 
+
 void testBoxCreate() {
-  graphBoxes[0] = new graphBox(200,200,50,50);
-  graphBoxes[1] = new graphBox(400,200,50,50);
-  graphBoxes[2] = new graphBox(500,200,50,50);
-  console.log("test box created");
+  var box1 = new graphBox(200,200,50,50);
+  box1.r = 255;
+  var box2 = new graphBox(350,200,50,50);
+  box2.g = 255;
+  var box3 = new graphBox(500,200,50,50);
+  box3.b = 255;
+  graphBoxes.add(box1);
+  graphBoxes.add(box2);
+  graphBoxes.add(box3);
+  console.log("test boxes created");
 }
 
 int num;
@@ -148,13 +155,10 @@ void draw(){
   drawLineGraph(100,350, 600, 300);
   drawIntensityBar(100,380, 600, 10);
   //drawSingleSpiral(400, 200, 300, 2);
-
-  //rect(graphBoxes[0].x, graphBoxes[0].y, graphBoxes[0].w, graphBoxes[0].h)
- for(int i = 0; i<graphBoxes.length() ; i++) {
-    if(graphBoxes[i] != null) {
-        rect(graphBoxes[i].x, graphBoxes[i].y, graphBoxes[i].w, graphBoxes[i].h);
-      }
-    }
+  graphBoxes.each(function(item) {
+    fill(color(item.data.r,item.data.g,item.data.b));
+    rect(item.data.x, item.data.y, item.data.w, item.data.h);
+  });
   
 }
 
@@ -162,32 +166,43 @@ void mousePressed(){
     // if(javascript != null){
     //   num = javascript.findStates(selectedState);
     // }
-    console.log("clicked at X:" + mouseX + " Y:" + mouseY);
-    for(int i = 0; i<graphBoxes.length() ; i++){
-      if(graphBoxes[i] != null && graphBoxes[i].intersect(mouseX,mouseY)) {
-        graphBoxes[i].locked = true;
-        console.log(i);
-        console.log("intersected box");
+    //console.log("clicked at X:" + mouseX + " Y:" + mouseY);
+
+    var current = graphBoxes.end;
+    while(current !== null) {
+      if(current.data.intersect(mouseX,mouseY)) {
+        current.data.locked = true;
+        graphBoxes.delete(current.data);
+        graphBoxes.add(current.data);
+        break;
       }
+      current = current.prev;
     }
+
+
 }
 
 void mouseReleased(){
-  for(int i = 0; i<graphBoxes.length() ; i++){
+  /*for(int i = 0; i<graphBoxes.length() ; i++){
       if(graphBoxes[i] != null) {
         graphBoxes[i].locked = false;
       }
-    }
+    }*/
+    graphBoxes.end.data.locked = false;
 }
 
 void mouseDragged() {
-  for(int i = 0; i<graphBoxes.length() ; i++){
+  /*for(int i = 0; i<graphBoxes.length() ; i++){
       if(graphBoxes[i] != null && graphBoxes[i].locked) {
         graphBoxes[i].x = mouseX - graphBoxes[i].xOffset;
         graphBoxes[i].y = mouseY - graphBoxes[i].yOffset;
       }
-    }
-
+    }*/
+      if(graphBoxes.end.data.locked)
+      {
+       graphBoxes.end.data.x = mouseX - graphBoxes.end.data.xOffset;
+       graphBoxes.end.data.y = mouseY - graphBoxes.end.data.yOffset;
+      }
 }
 
 void javaClicked(){

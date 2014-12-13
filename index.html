@@ -11,6 +11,7 @@
     <script src="jquery-jvectormap-us-lcc-en.js"></script>
     <script src="stateLookup.js"></script>
     <script src="interaction.js"></script>
+    <script src="linkedList.js"></script>
     <script type="text/javascript" src="processing.js"></script>
 	<script src="file:data/modis_2001_states.jsonp"></script>
 	<script type="text/javascript">
@@ -20,7 +21,7 @@
 	var currentDataset = modis_2001_states;
 	var map;
 
-	var graphBoxes = new Array(50);
+	var graphBoxes = new List();
 	var pjs;
 	var bound = false;
 
