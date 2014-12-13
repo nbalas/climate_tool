@@ -144,7 +144,7 @@ void setup() {
 }
 
 void draw(){
-  background(102);
+  background(80);
   fill(color(255,123,13));
   text("Current state: " + currState, 50, 50);
   fill(color(0,151,178));
