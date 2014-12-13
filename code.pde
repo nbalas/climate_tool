@@ -209,6 +209,16 @@ void mouseDragged() {
       }
 }
 
+void keyPressed() {
+  if(key == DELETE)
+  {
+    if(graphBoxes.end.data.selected)
+    {
+      graphBoxes.delete(graphBoxes.end.data);
+    }
+  }
+}
+
 void javaClicked(){
     if(javascript != null){
       num = javascript.findStates(selectedState);
