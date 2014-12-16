@@ -36,6 +36,7 @@
   </head>
   <body>
     <div id="vmap" style="width: 800px; height: 400px;"></div>
+    <button> </button
     <canvas id="code" data-processing-sources="code.pde"></canvas>
     <script>
 	$(function(){
@@ -56,6 +57,11 @@
 		    	if (states[code] == 1) {states[code] = 0;}
 		    	else {states[code] = 1;}
 		    	sendClick();
+		    	// console.log(selectedState);
+		    	// var stateEntires = filterByState(selectedState);
+		    	// console.log(stateEntires[2].scan);
+		    	// var avg = averages(stateEntires);
+		    	// console.log(avg.avg.State);
 		    },
 		});
 	});

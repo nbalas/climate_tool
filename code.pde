@@ -10,6 +10,8 @@ HashMap<String, ArrayList<String>> dataByState = new HashMap<String, ArrayList<S
 interface Javascript{
   //function delcarations
   int findStates(String state);
+  Object filterDateRange(String startDate, String endDate);
+  Object filterByState(String state);
 }
 
 void bindJavascript(Javascript js){
