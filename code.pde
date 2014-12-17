@@ -107,6 +107,7 @@ int num;
 
 void setup() {
   size(wT, hT);
+  rectMode(RADIUS);
   String fireLines[] = loadStrings("data/modis_2001.csv");
  
   // Grap the header of the csv file
@@ -159,7 +160,7 @@ void draw(){
   //drawSingleSpiral(400, 200, 300, 2);
   graphBoxes.each(function(item) {
     if(item.data.selected) {stroke(0, 102, 204);}
-    fill(color(item.data.r,item.data.g,item.data.b));
+    fill(color(item.data.r,item.data.g,item.data.b,item.data.a));
     rect(item.data.x, item.data.y, item.data.w, item.data.h);
     stroke(0,0,0);
   });
@@ -175,16 +176,22 @@ void mousePressed(){
     var current = graphBoxes.end;
     while(current !== null) {
       current.data.selected = false;
-      if(current.data.intersect(mouseX,mouseY)) {
-        current.data.locked = true;
+      if(current.data.intersect(mouseX,mouseY) != null) {
+        //current.data.locked = true;
         current.data.selected = true;
         graphBoxes.delete(current.data);
         graphBoxes.add(current.data);
-        break;
+        return;
       }
       current = current.prev;
     }
 
+    //Not clicking a graph, create selection rectangle
+    graphBoxes.add(new graphBox(mouseX,mouseY,0,0));
+    graphBoxes.end.data.locked = true;
+    graphBoxes.end.data.selector = true;
+    graphBoxes.end.data.sInitX = mouseX;
+    graphBoxes.end.data.sInitY = mouseY;
 
 }
 
@@ -194,7 +201,24 @@ void mouseReleased(){
         graphBoxes[i].locked = false;
       }
     }*/
+    graphBoxes.end.data.transformLock = false;
+    graphBoxes.end.data.translateLock = false;
     graphBoxes.end.data.locked = false;
+    graphBoxes.end.data.xTransform = 0;
+    graphBoxes.end.data.yTransform = 0;
+    if(graphBoxes.end.data.selector && graphBoxes.end.prev != null)
+    {
+      var current = graphBoxes.end.prev;
+      while(current !== null) {
+        if(current.data.inside(graphBoxes.end.data.x, graphBoxes.end.data.y,
+                                graphBoxes.end.data.w, graphBoxes.end.data.h) != null) {
+          //current.data.locked = true;
+          current.data.selected = true;
+        }
+        current = current.prev;
+      }
+      graphBoxes.delete(graphBoxes.end.data);
+    }
 }
 
 void mouseDragged() {
@@ -204,10 +228,24 @@ void mouseDragged() {
         graphBoxes[i].y = mouseY - graphBoxes[i].yOffset;
       }
     }*/
-      if(graphBoxes.end.data.locked)
+      if(graphBoxes.end.data.transformLock)
+      {
+       graphBoxes.end.data.w += (mouseX-pmouseX)*graphBoxes.end.data.xTransform;
+       graphBoxes.end.data.h += (mouseY-pmouseY)*graphBoxes.end.data.yTransform;
+      }
+      else if(graphBoxes.end.data.translateLock)
       {
        graphBoxes.end.data.x = mouseX - graphBoxes.end.data.xOffset;
        graphBoxes.end.data.y = mouseY - graphBoxes.end.data.yOffset;
+      }
+      else if(graphBoxes.end.data.selector)
+      {
+
+        graphBoxes.end.data.w += (mouseX-pmouseX)/2;
+        graphBoxes.end.data.h += (mouseY-pmouseY)/2;
+        graphBoxes.end.data.x = graphBoxes.end.data.sInitX + (graphBoxes.end.data.w);
+        //console.log(graphBoxes.end.data.sInitX);
+        graphBoxes.end.data.y = graphBoxes.end.data.sInitY + (graphBoxes.end.data.h);
       }
 }
 
