@@ -32,57 +32,105 @@
     var graphBoxes = new List();
     var pjs;
     var bound = false;
-	// printJSON(filterDateRange("2001-01-01", "2001-02-01"));
-	</script>
-  </head>
-  <body>
-    <div id="vmap" style="width: 800px; height: 400px;"></div>
-    <div id="menus"><center>
+
+    bindJavascript();
+
+    //printJSON(filterDateRange("2001-01-01", "2001-02-01"));
+
+  </script>
+</head>
+<body>
+  <div id="vmap" style="width: 800px; height: 400px;"></div>
+  <div id="menus"><center>
     X : 
     <select id="xSelection" onchange="return selectEvent('xSelection');">
+      <option> acq_date </option>
     </select>
     Y :
     <select id="ySelection" onchange="return selectEvent('ySelection');">
     </select>
     Graph Type:
     <select id="graphSelection" onchange="return selectEvent('graphSelection');">
-     <option> Line </option>
-      <option> Bar </option>
+      <option> Line </option>
       <option> Spiral </option>
+      <option> Intensity </option>
+    </select>
+    Year:
+    <select id="yearSelection" onchange="return selectEvent('yearSelection');">
+      <option> 2001 </option>
+      <option> 2002 </option>
+      <option> 2003 </option>
+      <option> 2004 </option>
+      <option> 2005 </option>
+    </select>
+    Start Month:
+    <select id="month1Selection" onchange="return selectEvent('month1Selection');">
+      <option> 01 </option>
+      <option> 02 </option>
+      <option> 03 </option>
+      <option> 04 </option>
+      <option> 05 </option>
+      <option> 06 </option>
+      <option> 07 </option>
+      <option> 08 </option>
+      <option> 09 </option>
+      <option> 10 </option>
+      <option> 11 </option>
+      <option> 12 </option>
+    </select>
+    End Month:
+    <select id="month2Selection" onchange="return selectEvent('month2Selection');">
+      <option> 01 </option>
+      <option> 02 </option>
+      <option> 03 </option>
+      <option> 04 </option>
+      <option> 05 </option>
+      <option> 06 </option>
+      <option> 07 </option>
+      <option> 08 </option>
+      <option> 09 </option>
+      <option> 10 </option>
+      <option> 11 </option>
+      <option> 12 </option>
+    </select>
+    </br>
+    Aggregation Mode:
+    <select id="modeSelection" onchange="return selectEvent('modeSelection');">
+      <option> Sum </option>
+      <option> Average </option>
+      <option> Count </option>
     </select>
     <button type="button" onclick="updateGraph();">Update Selected Graph</button>
     </center>
   </div>
-    <button> </button>
-    <canvas id="code" data-processing-sources="code.pde"></canvas>
-    <script>
-	$(function(){
-		us_map = $('#vmap').vectorMap({
-		    map: 'us_lcc_en',
-		    regionsSelectable: true,
-		    showTooltip: true,
-		    selectedRegion: 'MO',
-		    onRegionOver: function(event, code)
-		    {
-		    	currState = nameLookup[code];
-		    },
-		    onRegionClick: function(event, code)
-		    {
-		    	selectedState = nameLookup[code];
-		    	console.log(code);
-		    	if (states[code] == 1) {states[code] = 0;}
-		    	else {states[code] = 1;}
-		    	sendClick();
-		    	console.log(selectedState);
-		    	var stateEntires = filterByState(currentDataset, currState);
-		    	console.log(stateEntires);
-		    	// var avg = averages(stateEntires);
-		    	// console.log(avg);
-		    },
-		});
-	});
+  <canvas id="code" data-processing-sources="code.pde"></canvas>
+  <script>
+    $(function () {
+      us_map = $('#vmap').vectorMap({
+        map: 'us_lcc_en',
+        regionsSelectable: true,
+        showTooltip: true,
+        selectedRegion: 'MO',
+        onRegionOver: function (event, code) {
+          currState = nameLookup[code];
+        },
+        onRegionClick: function (event, code) {
+          selectedState = nameLookup[code];
+          //$('#vmap').vectorMap('select', code);
+          console.log(code);
+          if (states[code] == 1) { states[code] = 0; }
+          else { states[code] = 1; }
+          sendClick();
+          // console.log(selectedState);
+          // var stateEntires = filterByState(selectedState);
+          // console.log(stateEntires[2].scan);
+          // var avg = averages(stateEntires);
+          // console.log(avg.avg.State);
+        },
+      });
+    });
 
-	window.onload = selectionLoad;
-    </script>
-  </body>
+    window.onload = selectionLoad;
+  </script>
+</body>
 </html>
