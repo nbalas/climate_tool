@@ -218,42 +218,11 @@ int num;
 void setup() {
   size(wT, hT);
   rectMode(RADIUS);
-  String fireLines[] = loadStrings("data/modis_2001.csv");
- 
-  // Grap the header of the csv file
-  String fireHeader[] = split(fireLines[0], ",");
- 
+
   int state = -1;
-  int acq_date = -1;
+  int acq_date = -1; 
  
-  // Find state/acq_date indexes
-  for(int hI = 0; hI< fireHeader.length; hI++){
-    if(fireHeader[hI]=="state"){
-      state = hI;
-    }
-    if(fireHeader[hI]=="acq_date"){
-      acq_date = hI;
-    }
-  }
- 
-  // populate our data structures with state/date
-  for(int row = 1; row < fireLines.length; row++){
-   String[] singleLine = split(fireLines[row], ",");
-   int countTotal = 1;
-   if(singleLine[acq_date] in dateFireCount){
-    countTotal = countTotal + dateFireCount[singleLine[acq_date]].count;
-    dateFireCount[singleLine[acq_date]].count = countTotal;
-   }
-   dateFireCount[singleLine[acq_date]] = {count:countTotal};
-  }
-  for(var x in dateFireCount){
-    if(dateFireCount[x].count > maxFirePtDayCount){
-        maxFirePtDayCount = dateFireCount[x].count;
-    }
-    numberOfDays++;
-  }
-  console.log("setup complete");
-}
+ }
 
 void draw(){
   background(80);

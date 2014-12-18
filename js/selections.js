@@ -108,32 +108,18 @@ function updateGraph() {
     var w = 100; //graph width
     var h = 100; //graph height
     console.log("I am almost drawing!");
-
-    //for(var i = 0; i < states.length(); i++){
-      //if (states[i] == 1) {
-      //}
-    // Checks if state(s) are selected, creates graph for selected graphs.
-    // If no states are checked, loop over data to create graph
-    //}
-    //else{
-      //get size of graph box if selected, otherwise make generic sized node to contain graph
-      // send data to graph
-
-    //}
-
-    /*
-    what can we do with a seleceted attribute combination?
-    date on x - other value on y
-      single date for spot on y/bucket ranges per spot on y
-        could count occurance of value
-        sum total value for date
-        average value - average for that day
-        percent of total presence over days
-        How do we determine intention?
-    value n x -
-      bucket ranges? increasing in value
-
-    */
+    console.log(aggr);
+    switch (graphType){
+      case 0:
+        pjs.drawLineGraph(xp, yp, w, h, currentMonths_12, x, yObject, y, aggr);
+        break;
+      case 1:
+        pjs.drawSingleSpiral(xp, yp, w, h, currentMonths_12, x, yObject, y, aggr, 60);
+        break;
+      case 2:
+        pjs.drawIntensityBar(xp, yp, w, h, currentMonths_12, x, yObject, y, aggr);
+        break;
+    }
     box1.yObject = filterDateRange(filterByState(currentDataset, selectedState), start, end);
     graphBoxes.add(box1);
   }
