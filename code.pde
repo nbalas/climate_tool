@@ -30,7 +30,7 @@ JavaScript javascript;
 
 // Generic Line Graph
 // Assuming the object is already setup - 
-void drawLineGraph(int x, int y, int w, int h, Object xObject, string xAttribute, Object yObject, string yAttribute, String aggr) {
+void drawLineGraph(int x, int y, int w, int h, Object xObject, string xAttribute, Object yObject, string yAttribute, String aggr, data) {
   fill(255,255,255);
   float xCount = 12;//(float) getSize(xObject) - 2;
   float xMax   = (float) getMax(xObject, xAttribute);
@@ -75,7 +75,7 @@ void drawLineGraph(int x, int y, int w, int h, Object xObject, string xAttribute
   }
 }
 
-void drawIntensityBar(int x, int y, int w, int h, Object xObject, string xAttribute, Object yObject, string yAttribute, String aggr) {
+void drawIntensityBar(int x, int y, int w, int h, Object xObject, string xAttribute, Object yObject, string yAttribute, String aggr, data) {
   fill(255,255,255);
   float xCount = 12;//(float) getSize(xObject) - 2;
   float xMax   = (float) getMax(xObject, xAttribute);
@@ -115,7 +115,7 @@ void drawIntensityBar(int x, int y, int w, int h, Object xObject, string xAttrib
     }
 }
 
-void drawSingleSpiral(int x, int y, int w, int h, Object xObject, string xAttribute, Object yObject, string yAttribute, String aggr, int r) {
+void drawSingleSpiral(int x, int y, int w, int h, Object xObject, string xAttribute, Object yObject, string yAttribute, String aggr, int r, data) {
   float xCount = 12;//(float) getSize(xObject) - 2;
   float degree = 360/xCount;
   float xMax   = (float) getMax(xObject, xAttribute);
@@ -255,11 +255,11 @@ void draw(){
       //item.data.drawSingleSpiral(item.data.x, item.data.y, 2*item.data.w, 2/*item.data.h*/);
 
       if(item.data.graphType == "Line"){item.data.drawLineGraph(item.data.x,item.data.y,item.data.w,item.data.h,
-                        item.data.xObject,item.data.axisX,item.data.yObject,item.data.axisY,item.data.aggr);}
+                        item.data.xObject,item.data.axisX,item.data.yObject,item.data.axisY,item.data.aggr,item.data);}
       if(item.data.graphType == "Spiral"){item.data.drawSingleSpiral(item.data.x,item.data.y,item.data.w,item.data.h,
-                        item.data.xObject,item.data.axisX,item.data.yObject,item.data.axisY,item.data.aggr,1);}
+                        item.data.xObject,item.data.axisX,item.data.yObject,item.data.axisY,item.data.aggr,1,item.data);}
       if(item.data.graphType == "Intensity"){item.data.drawIntensityBar(item.data.x,item.data.y,item.data.w,item.data.h,
-                        item.data.xObject,item.data.axisX,item.data.yObject,item.data.axisY,item.data.aggr);}
+                        item.data.xObject,item.data.axisX,item.data.yObject,item.data.axisY,item.data.aggr,item.data);}
     //drawSingleSpiral(400, 200, 300, 2);
     }
   });

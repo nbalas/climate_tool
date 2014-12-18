@@ -94,7 +94,7 @@ function updateGraph() {
     box1.b = Math.random()*255;
     var start = year + "-" + month1 + "-01";
     var end = year + "-" + month2 + "-01";
-    console.log(end);
+    //console.log(end);
     //var yObject = filterDateRange(filterByState(currentDataset, selectedState), start, end);
 
     // Object xObject = currentMonths ////////TODOOOOOOOO
@@ -106,8 +106,8 @@ function updateGraph() {
     var yp = 300; // center y position
     var w = 100; //graph width
     var h = 100; //graph height
-    console.log("I am almost drawing!");
-    console.log(aggr);
+    //console.log("I am almost drawing!");
+    //console.log(aggr);
     switch (graphType){
       case 0:
         pjs.drawLineGraph(xp, yp, w, h, currentMonths_12, x, yObject, y, aggr);

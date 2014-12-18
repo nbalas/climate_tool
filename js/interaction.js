@@ -39,14 +39,14 @@ function graphBox(x,y,w,h) {
 	this.g = 0;
 	this.b = 0;
 	this.a = 64;
-	this.drawLineGraph = function(x, y, w, h, xObject, axisX, yObject, axisY, aggr) {
-		this.processingInstance.drawLineGraph(x, y, w, h, xObject, axisX, yObject, axisY, aggr);
+	this.drawLineGraph = function(x, y, w, h, xObject, axisX, yObject, axisY, aggr, data) {
+		this.processingInstance.drawLineGraph(x, y, w, h, xObject, axisX, yObject, axisY, aggr, data);
 	}
-	this.drawIntensityBar = function(x, y, w, h, xObject, axisX, yObject, axisY, aggr) {
-		this.processingInstance.drawIntensityBar(x, y, w, h, xObject, axisX, yObject, axisY, aggr);
+	this.drawIntensityBar = function(x, y, w, h, xObject, axisX, yObject, axisY, aggr, data) {
+		this.processingInstance.drawIntensityBar(x, y, w, h, xObject, axisX, yObject, axisY, aggr, data);
 	}
-	this.drawSingleSpiral = function(x, y, w, h, xObject, axisX, yObject, axisY, aggr, r) {
-		this.processingInstance.drawSingleSpiral(x, y, w, h, xObject, axisX, yObject, axisY, aggr, r);
+	this.drawSingleSpiral = function(x, y, w, h, xObject, axisX, yObject, axisY, aggr, r, data) {
+		this.processingInstance.drawSingleSpiral(x, y, w, h, xObject, axisX, yObject, axisY, aggr, r, data);
 	}
 	this.intersect = function(clickX, clickY) {		//click intersection
 		/*console.log("calculating intersect");*/
