@@ -4,7 +4,7 @@ var graphType="Line";
 var year = "2001";
 var month1 = "01";
 var month2 = "12";
-var mode = "Average";
+var aggr = "Average";
 
 function selectionLoad() {
   //var select = document.getElementById("xSelection");
@@ -63,7 +63,7 @@ function selectEvent(menu) {
   }
   if (menu == "modeSelection") {
     console.log("updating aggregation mode");
-    mode = select.selectedIndex;
+    aggr = select.selectedIndex;
   }
 }
 
@@ -73,12 +73,19 @@ function updateGraph() {
     console.log(start);
     var end = year + "-" + month2 + "-01";
     console.log(end);
-    var object = filterDateRange(filterByState(currentDataset, selectedState), start, end);
+    var yObject = filterDateRange(filterByState(currentDataset, selectedState), start, end);
 
-    var xp = 300;
-    var yp = 200;
-    var w = 100;
-    var h = 100;
+    // Object xObject = currentMonths ////////TODOOOOOOOO
+    // string xAttribute = x
+    // string yAttribute = y
+    // String aggr
+
+    var xp = 300; // center x position
+    var yp = 200; // center y position
+    var w = 100; //graph width
+    var h = 100; //graph height
+    console.log("I am almost drawing!");
+    drawLineGraph(xp, yp, w, h, currentMonths, x, yObject, y, aggr);
 
 
 
