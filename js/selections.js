@@ -1,10 +1,10 @@
 var x;
-var y;
-var graphType;
-var year;
-var month1;
-var month2;
-var mode;
+var y= "brightness";
+var graphType="Line";
+var year = "2001";
+var month1 = "01";
+var month2 = "12";
+var mode = "Average";
 
 function selectionLoad() {
   //var select = document.getElementById("xSelection");
@@ -70,8 +70,17 @@ function selectEvent(menu) {
 function updateGraph() {
   if (/*x != null &&*/y != null && graphType != null) {
     var start = year + "-" + month1 + "-01";
+    console.log(start);
     var end = year + "-" + month2 + "-01";
-    var object = filterDateRange(start, end, filterByState(selectedState));
+    console.log(end);
+    var object = filterDateRange(filterByState(currentDataset, selectedState), start, end);
+
+    var xp = 300;
+    var yp = 200;
+    var w = 100;
+    var h = 100;
+
+
 
     //for(var i = 0; i < states.length(); i++){
       //if (states[i] == 1) {
