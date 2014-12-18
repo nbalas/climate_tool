@@ -33,6 +33,7 @@
     var stateEntires = {};
     var stateEntires = filterByState(currentDataset, "Minnesota");
 	  var graphBoxes = new List();
+    var selStates = new List();
   	var pjs;
   	var bound = false;
 
@@ -119,8 +120,8 @@
           selectedState = nameLookup[code];
           //$('#vmap').vectorMap('select', code);
           console.log(code);
-          if (states[code] == 1) { states[code] = 0; }
-          else { states[code] = 1; }
+          if (states[code] == 1) { states[code] = 0; selStates.delete(selectedState);}
+          else { states[code] = 1; selStates.add(selectedState);}
           sendClick();
           // console.log(selectedState);
           // var stateEntires = filterByState(selectedState);

@@ -242,11 +242,20 @@ void setup() {
 void draw(){
   background(80);
   fill(color(255,123,13));
-  text("Current state: " + currState, 50, 50);
+  text("Current state: ", 50, 50);
+  text("\t\t\t"+ currState, 50, 70);
   fill(color(0,151,178));
-  text("Selected state: " + selectedState, 50, 70);
-  fill(color(255,123,13), 128);
-  text("Data: " + num + " elements of " + selectedState, 50, 90);
+  text("Selected state: ", 50, 90);
+  var textSpace = 0;
+  var currentState = selStates.start;
+  while(currentState !== null){
+    text("\t\t\t"+ currentState.data, 50, 110+(textSpace*20));
+    currentState = currentState.next;
+    textSpace++;
+  }
+  
+  //fill(color(255,123,13), 128);
+  //text("Data: " + num + " elements of " + selectedState, 50, 90);
   
   //drawLineGraph(100,350, 600, 300);
   // drawIntensityBar(100,380, 600, 10);
