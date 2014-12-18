@@ -33,11 +33,8 @@ JavaScript javascript;
 void drawLineGraph(int x, int y, int w, int h, Object xObject, string xAttribute, Object yObject, string yAttribute, String aggr) {
   fill(255,255,255);
   float xCount = 4;//(float) getSize(xObject) - 2;
-  // int yCount = getSize(yObject);
   float xMax   = (float) getMax(xObject, xAttribute);
-  // int xMax = 4;
   float xMin   = (float) getMin(xObject, xAttribute);
-  // int xMin = 0;
   float yMax   = (float) getMax(yObject, yAttribute);
   float yMin   = (float) getMin(yObject, yAttribute);
   float thing  = x-w;
@@ -45,6 +42,7 @@ void drawLineGraph(int x, int y, int w, int h, Object xObject, string xAttribute
   float heightScaler = (float)(h*2)/(float)(yMax-yMin); // do we want the graph to scale between the min/max value? or not?
   int i = 0;
   float previous = null;
+
   for(var date in xObject){
     float value = evaluateAggr(aggr.toLowerCase(), yObject, yAttribute, xObject[date]);
     int current = (y+h)-(value*heightScaler);
@@ -58,28 +56,34 @@ void drawLineGraph(int x, int y, int w, int h, Object xObject, string xAttribute
   }
 }
 
-void drawIntensityBar(int x, int y, int w, int h) {
+void drawIntensityBar(int x, int y, int w, int h, Object xObject, string xAttribute, Object yObject, string yAttribute, String aggr) {
   fill(255,255,255);
-  int spacer = 0;
-  float widthOfBar = (2*w)/numberOfDays;
+  float xCount = 4;//(float) getSize(xObject) - 2;
+  float xMax   = (float) getMax(xObject, xAttribute);
+  float xMin   = (float) getMin(xObject, xAttribute);
+  float yMax   = (float) getMax(yObject, yAttribute);
+  float yMin   = (float) getMin(yObject, yAttribute);
+  float thing  = x-w;
+  float widthScaler = (float)(w*2)/xCount;
+  float heightScaler = (float)(h*2)/(float)(yMax-yMin); // do we want the graph to scale between the min/max value? or not?
   int i = 0;
   
-  for(var z in dateFireCount){
+  for(var date in xObject){
     // histogram
-    int fireCount = dateFireCount[z].count;
-    int color = 255*(fireCount/maxFirePtDayCount);
+    float value = evaluateAggr(aggr.toLowerCase(), yObject, yAttribute, xObject[date]);
+    int color = 255*(value/yMax);
     fill(color,0,0);
     stroke(color,0,0);
-    rect(i*(widthOfBar+spacer)+x-w, y,widthOfBar-spacer, h);
+    rect((i*(widthScaler)+thing), y-h, (widthScaler+thing), h);
 	
-	int positionInGraph = Math.round(i*(widthOfBar+spacer)+100);
-	if(mouseX == positionInGraph){
-      fill(255);
-      text(z+" had a fire presence count of: "+fireCount, 50, 105);
-    }
+  	int positionInGraph = Math.round(i*(widthScaler)+100);
+  	if(mouseX == positionInGraph){
+        fill(255);
+        text(date +" had a fire presence count of: "+value, 50, 105);
+      }
 
-    i++;
-  }
+      i++;
+    }
 }
 
 void drawSingleSpiral(int x, int y, int r, int weight) {
@@ -238,7 +242,7 @@ void mousePressed(){
     //   num = javascript.findStates(selectedState);
     // }
     //console.log("clicked at X:" + mouseX + " Y:" + mouseY);
-    drawLineGraph(100, 350, 600, 300, currentMonths, "acq_date", stateEntires, "confidence", "Count");
+    drawIntensityBar(100, 350, 100, 10, currentMonths, "acq_date", stateEntires, "confidence", "Count");
 
 
     var current = graphBoxes.end;
