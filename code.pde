@@ -55,8 +55,8 @@ void drawLineGraph(int x, int y, int w, int h, Object xObject, string xAttribute
   float widthScaler = (float)(w*2)/xCount;
   float heightScaler = (float)(h*2)/(float)(yMax); // do we want the graph to scale between the min/max value? or not?
 
-  // console.log('yMax: ' + yMax + ' yMin: ' + yMin);
-  // console.log('widthScaler: ' + widthScaler + ' heightScaler: ' + heightScaler);
+  console.log('yMax: ' + yMax + ' yMin: ' + yMin);
+  console.log('widthScaler: ' + widthScaler + ' heightScaler: ' + heightScaler);
 
   for(var date in xObject){
     value = evaluateAggr(aggr.toLowerCase(), yObject, yAttribute, xObject[date]);
