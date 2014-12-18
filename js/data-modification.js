@@ -59,7 +59,7 @@ function averages(object){
   var current   = 0;
   var max;
   //inital average attributes
-  for (var attribute in object[0]){
+  for (var attribute in object[Object.keys(object)[0]]){
     eval('newObject.avg.' + attribute + ' = 0.0');
   }
   // gather values for each attribute
@@ -94,7 +94,7 @@ function averages(object){
           max      = current;
         }
       }
-      eval('newObject.avg.' + attribute + ' = ' + maxValue);
+      eval('newObject.avg.' + attribute + ' = ' + "'" + maxValue + "'");
     } else {
       eval('newObject.avg.' + attribute + ' = newObject.avg.' + attribute + ' / 5');
     }
