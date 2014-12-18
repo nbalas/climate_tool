@@ -27,10 +27,13 @@ function graphBox(x,y,w,h) {
 	this.b = 0;
 	this.a = 64;
 	this.drawLineGraph = function(x, y, w, h) {
-		processingInstance.drawLineGraph(x, y, w, h);
+		this.processingInstance.drawLineGraph(x, y, w, h);
 	}
 	this.drawIntensityBar = function(x, y, w, h) {
-		processingInstance.drawIntensityBar(x, y, w, h);
+		this.processingInstance.drawIntensityBar(x, y, w, h);
+	}
+	this.drawSingleSpiral = function(x, y, w, h) {
+		this.processingInstance.drawSingleSpiral(x, y, w, h);
 	}
 	this.intersect = function(clickX, clickY) {		//click intersection
 		/*console.log("calculating intersect");*/
