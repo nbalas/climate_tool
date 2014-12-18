@@ -3,6 +3,8 @@ function List() {
   return {data: null, next: null, prev: null}; 
  }; 
  
+ this.length = 0;
+ this.selectCount = 0;
  this.start = null; 
  this.end = null; 
  
@@ -15,26 +17,38 @@ function List() {
    this.end.next.prev = this.end
    this.end = this.end.next; 
   } ; 
-  this.end.data = data; 
+  this.end.data = data;
+  this.length++;
  }; 
 
- this.delete = function(data) { 
+ this.delete = function(data) {
   var current = this.start; 
-  var previous = this.start; 
+  var previous = this.start;
   while (current !== null) { 
    if (data === current.data) { 
     if (current === this.start) { 
      this.start = current.next; 
-     return; 
+     if(!this.start) {
+        this.end = null;
+     }
+     else {
+        this.start.prev = null;
+     }
     } 
-    if (current === this.end) 
-                      this.end = previous;
-    previous.next = current.next; return; 
+    else if (current === this.end) {
+      current = this.end;
+      this.end = current.prev;
+      this.end.next = null;
     }
-    previous = current; 
-    current = current.next; 
+    else {
+      current.prev.next = current.next;
+    }
+    this.length--;
+    return;
    }
- }; 
+   current = current.next;
+  }
+ };
 
  this.insertAsFirst = function(d) { 
   var temp = List.makeNode(); 
@@ -73,6 +87,13 @@ function List() {
   while (current !== null) { 
    f(current); 
    current = current.next; 
+  } 
+ };
+ this.revEach = function(f) {
+  var current = this.end;
+  while (current !== null) { 
+   f(current); 
+   current = current.prev; 
   } 
  };
 } 

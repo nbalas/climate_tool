@@ -65,10 +65,33 @@ function graphBox(x,y,w,h) {
 		}
 		else {return null;}
 	}
-	this.inside = function(rectX, rectY, rectW, rectH)
+	this.inside = function(rectX, rectY, rectW, rectH)	//box within bounding box intersection
 	{
-		//if(this.y + this.h )
-		return null;
+		var absRectH = Math.abs(rectH);
+		var absRectW = Math.abs(rectW);
+		if(this.y + this.h > rectY-absRectH && this.y + this.h < rectY+absRectH)	//check bottom edge
+		{
+			if(this.x + this.w > rectX-absRectW && this.x + this.w < rectX+absRectW)	//check right edge
+			{
+				return true;
+			}
+			if(this.x - this.w > rectX-absRectW && this.x - this.w < rectX+absRectW)	//check left edge
+			{
+				return true;
+			}
+		}
+		if(this.y - this.h > rectY-absRectH && this.y - this.h < rectY+absRectH)	//check top edge
+		{
+			if(this.x + this.w > rectX-absRectW && this.x + this.w < rectX+absRectW)	//check right edge
+			{
+				return true;
+			}
+			if(this.x - this.w > rectX-absRectW && this.x - this.w < rectX+absRectW)	//check left edge
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

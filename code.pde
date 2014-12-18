@@ -88,6 +88,50 @@ void drawSingleSpiral(int x, int y, int r, int weight) {
   }
 }
 
+void deleteGraphs() {
+  graphBoxes.each(function(item) {
+    if(item.data.selected) {console.log("Deleting"); graphBoxes.delete(item.data); console.log("Deleted");}
+  });
+}
+
+void snapGraphs() {
+  graphBoxes.each(function(item) {
+    if(item.data.selected) {item.data.x = mouseX; item.data.y = mouseY;}
+  });
+}
+
+void snapGraphsDim() {
+  var maxHeight = 0;
+  var maxWidth = 0;
+  graphBoxes.each(function(item) {
+    if(item.data.selected) {
+      if(item.data.h > maxHeight)
+      {
+          maxHeight = item.data.h;
+      }
+      if(item.data.w > maxWidth)
+      {
+          maxWidth = item.data.w;
+      }
+    }
+  });
+  graphBoxes.each(function(item) {
+    if(item.data.selected) {item.data.h = maxHeight; item.data.w = maxWidth;}
+  });
+}
+
+void selectAll() {
+  graphBoxes.each(function(item) {item.data.selected = true;});
+}
+
+void deselectAll() {
+  graphBoxes.each(function(item) {item.data.selected = false;});
+}
+
+void expandGraphs() {
+  var expandCount = 0;
+  graphBoxes.each(function(item) {if(item.data.selected) {item.data.x += (expandCount++)*20;}});
+}
 
 void testBoxCreate() {
   var box1 = new graphBox(200,200,50,50);
@@ -175,8 +219,9 @@ void mousePressed(){
 
     var current = graphBoxes.end;
     while(current !== null) {
-      current.data.selected = false;
-      if(current.data.intersect(mouseX,mouseY) != null) {
+      //current.data.selected = false;
+      if(current.data.intersect(mouseX,mouseY) != null) { //hit something
+        if(current.data.selected==false) {graphBoxes.each(function(item) {item.data.selected = false;});}
         //current.data.locked = true;
         current.data.selected = true;
         graphBoxes.delete(current.data);
@@ -187,12 +232,13 @@ void mousePressed(){
     }
 
     //Not clicking a graph, create selection rectangle
+    graphBoxes.each(function(item) {item.data.selected = false;});
+    graphBoxes.selectCount = 0;
     graphBoxes.add(new graphBox(mouseX,mouseY,0,0));
     graphBoxes.end.data.locked = true;
     graphBoxes.end.data.selector = true;
     graphBoxes.end.data.sInitX = mouseX;
     graphBoxes.end.data.sInitY = mouseY;
-
 }
 
 void mouseReleased(){
@@ -211,9 +257,10 @@ void mouseReleased(){
       var current = graphBoxes.end.prev;
       while(current !== null) {
         if(current.data.inside(graphBoxes.end.data.x, graphBoxes.end.data.y,
-                                graphBoxes.end.data.w, graphBoxes.end.data.h) != null) {
+                                graphBoxes.end.data.w, graphBoxes.end.data.h)) {
           //current.data.locked = true;
           current.data.selected = true;
+          graphBoxes.selectCount++;
         }
         current = current.prev;
       }
@@ -228,34 +275,68 @@ void mouseDragged() {
         graphBoxes[i].y = mouseY - graphBoxes[i].yOffset;
       }
     }*/
-      if(graphBoxes.end.data.transformLock)
+      if(graphBoxes.end.data.transformLock) //stretch or shrink
       {
+        if(graphBoxes.selectCount>1) {
+          graphBoxes.revEach(function(item) {
+            if(item.data.selected) {
+            item.data.w += (mouseX-pmouseX)*graphBoxes.end.data.xTransform;
+            item.data.h += (mouseY-pmouseY)*graphBoxes.end.data.yTransform;
+            }
+          });
+          return;
+        }
        graphBoxes.end.data.w += (mouseX-pmouseX)*graphBoxes.end.data.xTransform;
        graphBoxes.end.data.h += (mouseY-pmouseY)*graphBoxes.end.data.yTransform;
       }
-      else if(graphBoxes.end.data.translateLock)
+      else if(graphBoxes.end.data.translateLock)  //move around canvas
       {
+        if(graphBoxes.selectCount>1) {
+          graphBoxes.revEach(function(item) {
+            item.data.x += (mouseX-pmouseX);
+            item.data.y += (mouseY-pmouseY);
+          });
+          return;
+        }
        graphBoxes.end.data.x = mouseX - graphBoxes.end.data.xOffset;
        graphBoxes.end.data.y = mouseY - graphBoxes.end.data.yOffset;
       }
       else if(graphBoxes.end.data.selector)
       {
-
         graphBoxes.end.data.w += (mouseX-pmouseX)/2;
         graphBoxes.end.data.h += (mouseY-pmouseY)/2;
         graphBoxes.end.data.x = graphBoxes.end.data.sInitX + (graphBoxes.end.data.w);
-        //console.log(graphBoxes.end.data.sInitX);
         graphBoxes.end.data.y = graphBoxes.end.data.sInitY + (graphBoxes.end.data.h);
       }
 }
 
 void keyPressed() {
-  if(key == DELETE)
+  if(key == DELETE)   //delete graph
   {
-    if(graphBoxes.end.data.selected)
+      deleteGraphs();
+  }
+  if(key == ' ')    //snap to 'center' coordinates
+  {
+      snapGraphs();
+  }
+  if(key == CODED)
+  {
+    if(keyCode == ALT)  //snap width and height
     {
-      graphBoxes.delete(graphBoxes.end.data);
+        snapGraphsDim();
     }
+  }
+  if(key == 'e')
+  {
+    expandGraphs();
+  }
+  if(key == 'a')
+  {
+    selectAll();
+  }
+  if(key == 'd')
+  {
+    deselectAll();
   }
 }
 
