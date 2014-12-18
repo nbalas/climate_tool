@@ -32,16 +32,18 @@ JavaScript javascript;
 // Assuming the object is already setup - 
 void drawLineGraph(int x, int y, int w, int h, Object xObject, string xAttribute, Object yObject, string yAttribute, String aggr, data) {
   fill(255,255,255);
+  int textSpacing = 20;
   float xCount = 12;//(float) getSize(xObject) - 2;
   float xMax   = (float) getMax(xObject, xAttribute);
   float xMin   = (float) getMin(xObject, xAttribute);
   // float yMax   = (float) getMax(yObject, yAttribute);
   // float yMin   = (float) getMin(yObject, yAttribute);
   float yMax = -99999, yMin = 99999;
-  float thing  = x-w;
+  float thing  = x-w+textSpacing;
   int i = 0;
   float previous = null;
   float value;
+
   for(var date in xObject){
     value = evaluateAggr(aggr.toLowerCase(), yObject, yAttribute, xObject[date]);
     if(value < yMin){
@@ -52,15 +54,15 @@ void drawLineGraph(int x, int y, int w, int h, Object xObject, string xAttribute
     }
   }
 
-  float widthScaler = (float)(w*2)/xCount;
-  float heightScaler = (float)(h*2)/(float)(yMax); // do we want the graph to scale between the min/max value? or not?
+  float widthScaler = (float)((w-textSpacing)*2)/xCount;
+  float heightScaler = (float)(h*2-textSpacing)/(float)(yMax); // do we want the graph to scale between the min/max value? or not?
 
   //console.log('yMax: ' + yMax + ' yMin: ' + yMin);
   //console.log('widthScaler: ' + widthScaler + ' heightScaler: ' + heightScaler);
 
   for(var date in xObject){
     value = evaluateAggr(aggr.toLowerCase(), yObject, yAttribute, xObject[date]);
-    int current = (y+h)-(value*heightScaler);
+    int current = (y+h-textSpacing)-(value*heightScaler);
     if(value == NaN){
       value = 0;
     }
@@ -73,6 +75,19 @@ void drawLineGraph(int x, int y, int w, int h, Object xObject, string xAttribute
     previous = current;
     i++;
   }
+
+  int textSpacing = 20;
+  textSize(12);
+  pushMatrix();
+  translate(x-w+textSpacing/2, y-h/4);
+  rotate(radians(90));
+  text(yAttribute,0, 0);
+  popMatrix();
+
+  int xAttWid = textWidth(xAttribute);
+  text(xAttribute,x-xAttWid/2, y+h-textSpacing/2);
+
+  text(data.state,x-w+textSpacing/2, y-h+textSpacing)
 }
 
 void drawIntensityBar(int x, int y, int w, int h, Object xObject, string xAttribute, Object yObject, string yAttribute, String aggr, data) {
