@@ -34,6 +34,22 @@
   </head>
   <body>
     <div id="vmap" style="width: 800px; height: 400px;"></div>
+    <div id="menus"><center>
+    X : 
+    <select id="xSelection" onchange="return selectEvent('xSelection');">
+    </select>
+    Y :
+    <select id="ySelection" onchange="return selectEvent('ySelection');">
+    </select>
+    Graph Type:
+    <select id="graphSelection" onchange="return selectEvent('graphSelection');">
+     <option> Line </option>
+      <option> Bar </option>
+      <option> Spiral </option>
+    </select>
+    <button type="button" onclick="updateGraph();">Update Selected Graph</button>
+    </center>
+  </div>
     <button> </button>
     <canvas id="code" data-processing-sources="code.pde"></canvas>
     <script>
@@ -50,19 +66,20 @@
 		    onRegionClick: function(event, code)
 		    {
 		    	selectedState = nameLookup[code];
-		    	//$('#vmap').vectorMap('select', code);
 		    	console.log(code);
 		    	if (states[code] == 1) {states[code] = 0;}
 		    	else {states[code] = 1;}
 		    	sendClick();
-		    	// console.log(selectedState);
-		    	// var stateEntires = filterByState(selectedState);
-		    	// console.log(stateEntires);
-		    	// var avg = averages(stateEntires);
-		    	// console.log(avg);
+		    	console.log(selectedState);
+		    	var stateEntires = filterDateRange("2001-01-01", "2001-02-01");
+		    	console.log(stateEntires);
+		    	var avg = averages(stateEntires);
+		    	console.log(avg);
 		    },
 		});
 	});
+
+	window.onload = selectionLoad;
     </script>
   </body>
 </html>

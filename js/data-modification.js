@@ -16,7 +16,7 @@ function filterDateRange(start, end){
   var endNum   = Date.parse(end);
   var newObject = {"max":{}, "min":{}};
   var dateNum;
-  for (var attribute in currentDataset[0]){
+  for (var attribute in currentDataset[Object.keys(currentDataset)[0]]){
   	eval('newObject.max.' + attribute + ' = -99999');
   	eval('newObject.min.' + attribute + ' = 99999');
   }
@@ -35,7 +35,7 @@ function filterDateRange(start, end){
 
 function filterByState(state){
   var newObject = {"max":{}, "min":{}};
-  for (var attribute in currentDataset[0]){
+  for (var attribute in currentDataset[Object.keys(currentDataset)[0]]){
     eval('newObject.max.' + attribute + ' = -99999');
     eval('newObject.min.' + attribute + ' = 99999');
   }
@@ -67,6 +67,7 @@ function averages(object){
     for(var attribute in object[entry]){
       entryValue = eval('object[entry].' + attribute);
       if (attribute == 'State'){
+        console.log(entryValue);
         console.log('nonNum value: ' + eval('nonNum.' + attribute + '.' + entryValue));
         console.log('entry       : ' + entryValue);
         if (eval('nonNum.' + attribute + '.' + entryValue) == undefined){
@@ -94,7 +95,7 @@ function averages(object){
           max      = current;
         }
       }
-      eval('newObject.avg.' + attribute + ' = ' + "'" + maxValue + "'");
+      eval('newObject.avg.' + attribute + " = '" + maxValue + "'");
     } else {
       eval('newObject.avg.' + attribute + ' = newObject.avg.' + attribute + ' / 5');
     }
