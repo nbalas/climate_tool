@@ -42,7 +42,7 @@
 </head>
 <body>
   <div id="vmap" style="width: 800px; height: 400px;"></div>
-  <div id="menus"><center>
+  <div id="menus"><center><font color="white">
     X : 
     <select id="xSelection" onchange="return selectEvent('xSelection');">
       <option> acq_date </option>
@@ -102,7 +102,7 @@
       <option> Count </option>
     </select>
     <button type="button" onclick="updateGraph();">Update Selected Graph</button>
-    </center>
+    </center></font>
   </div>
   <canvas id="code" data-processing-sources="code.pde"></canvas>
   <script>
