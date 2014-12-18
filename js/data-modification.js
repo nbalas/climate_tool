@@ -59,7 +59,7 @@ function average(object, attribute, date) {
       }      
     }
   }
-  console.log('sum ' + sum + ' count ' + count);
+  // console.log('sum ' + sum + ' count ' + count);
   if(count == 0){
     return 0;
   } else {
