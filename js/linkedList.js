@@ -18,6 +18,7 @@ function List() {
    this.end = this.end.next; 
   } ; 
   this.end.data = data;
+  console.log(data);
   this.length++;
  }; 
 

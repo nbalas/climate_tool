@@ -1,6 +1,6 @@
 var x = "acq_date";
 var y= "brightness";
-var graphType = 0;
+var graphType = "Line";
 var year = "2001";
 var month1 = "01";
 var month2 = "12";
@@ -23,15 +23,6 @@ function selectionLoad() {
   }
 
 
-  var select = document.getElementById("xSelection");
-  x = select.options[select.selectedIndex].text;
-  console.log(graphType);
-
-  var select1 = document.getElementById("ySelection");
-  y = select.options[select.selectedIndex].text;
-
-  var select2 = document.getElementById("graphSelection");
-  graphType = select.options[select.selectedIndex].text;
 }
 
 
@@ -71,6 +62,7 @@ function updateGraph() {
   var wasSelected = false;
   var current = graphBoxes.end;
   while(current !== null) {
+    console.log("in while");
     if(current.data.selected) {
       var wasSelected = true;
       current.data.axisY = y;
@@ -81,11 +73,13 @@ function updateGraph() {
       current.data.aggr = aggr;
       var start = year + "-" + month1 + "-01";
       var end = year + "-" + month2 + "-01";
-      var yObject = filterDateRange(filterByState(currentDataset, selectedState), start, end);
+      current.data.yObject = filterDateRange(filterByState(currentDataset, selectedState), start, end);
     }
+    current = current.next;
   }
   if(!wasSelected)
   {
+    console.log('new graph');
     var box1 = new graphBox(400,200,100,100);
     box1.axisY = y;
     box1.graphType = graphType;
@@ -96,7 +90,7 @@ function updateGraph() {
     var start = year + "-" + month1 + "-01";
     var end = year + "-" + month2 + "-01";
     console.log(end);
-    var yObject = filterDateRange(filterByState(currentDataset, selectedState), start, end);
+    //var yObject = filterDateRange(filterByState(currentDataset, selectedState), start, end);
 
     // Object xObject = currentMonths ////////TODOOOOOOOO
     // string xAttribute = x

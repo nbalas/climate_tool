@@ -23,6 +23,7 @@ function graphBox(x,y,w,h) {
 	this.sInitY = 0;
 
 	this.axisY = "";
+	this.axisX = "acq_date";
 	this.graphType = "";
 	this.year = "";
 	this.startMonth = "";
@@ -36,14 +37,14 @@ function graphBox(x,y,w,h) {
 	this.g = 0;
 	this.b = 0;
 	this.a = 64;
-	this.drawLineGraph = function(x, y, w, h) {
-		this.processingInstance.drawLineGraph(x, y, w, h);
+	this.drawLineGraph = function(x, y, w, h, xObject, axisX, yObject, axisY, aggr) {
+		this.processingInstance.drawLineGraph(x, y, w, h, xObject, axisX, yObject, axisY, aggr);
 	}
-	this.drawIntensityBar = function(x, y, w, h) {
-		this.processingInstance.drawIntensityBar(x, y, w, h);
+	this.drawIntensityBar = function(x, y, w, h, xObject, axisX, yObject, axisY, aggr) {
+		this.processingInstance.drawIntensityBar(x, y, w, h, xObject, axisX, yObject, axisY, aggr);
 	}
-	this.drawSingleSpiral = function(x, y, w, h) {
-		this.processingInstance.drawSingleSpiral(x, y, w, h);
+	this.drawSingleSpiral = function(x, y, w, h, xObject, axisX, yObject, axisY, aggr, r) {
+		this.processingInstance.drawSingleSpiral(x, y, w, h, xObject, axisX, yObject, axisY, aggr, r);
 	}
 	this.intersect = function(clickX, clickY) {		//click intersection
 		/*console.log("calculating intersect");*/
