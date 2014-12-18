@@ -30,12 +30,17 @@ function getMax(object, attribute) {
 
 function sum(object, attribute, date) {
   var sum = 0;
+  // console.log(object);
   for(var entry in object){
-    var dateArray = object[entry].acq_date.split('-');
-    var month     = dateArray[1];
-    if(month == matchMonth){
-      var current = eval('object[entry].' + attribute);
-      sum = sum + current;
+    if (typeof object[entry].acq_date != 'number'){
+      var dateArray = object[entry].acq_date.split('-');
+      var month     = dateArray[1];
+      // console.log(month + " : " + date);
+      if(month == date){
+        var current = eval('object[entry].' + attribute);
+        // console.log(current);
+        sum = sum + parseInt(current);
+      }      
     }
   }
   return sum;
@@ -47,7 +52,7 @@ function average(object, attribute, date) {
   for(var entry in object){
     var dateArray = object[entry].acq_date.split('-');
     var month     = dateArray[1];
-    if(month == matchMonth){
+    if(month == date){
       var current = eval('object[entry].' + attribute);
       sum = sum + current;
       numEntries++;
@@ -61,7 +66,7 @@ function count(object, attribute, date) {
   for(var entry in object){
     var dateArray = object[entry].acq_date.split('-');
     var month     = dateArray[1];
-    if(month == matchMonth){
+    if(month == date){
       numEntries++;
     }
   }
@@ -69,7 +74,15 @@ function count(object, attribute, date) {
 }
 
 function evaluateAggr(aggr, object, attribute, date) {
-  return eval(aggr + '(' + object + ', ' + attribute + ', ' + date + ')');
+  var value;
+  if (aggr == "sum"){
+    value = sum(object, attribute, date);
+  } else if(aggr == "average"){
+    value = average(object, attribute, date);
+  } else{
+    value = count(object, attribute, date);
+  }
+  return value;
 }
 // EXAMPLE USAGE:
 // filterDateRange("2001-01-01", "2001-02-01");

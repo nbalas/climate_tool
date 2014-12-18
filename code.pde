@@ -16,7 +16,7 @@ interface Javascript{
   float average(Object obj, String attribute, String date);
   float sum(Object obj, String attribute, String date);
   float count(Object obj, String attribute, String date);
-  float evalateAggr(String aggr, Object obj, String attribute, String date);
+  float evaluateAggr(String aggr, Object obj, String attribute, String date);
   Object filterDateRange(String startDate, String endDate);
   Object filterByState(String state);
 }
@@ -29,12 +29,14 @@ JavaScript javascript;
 
 // Generic Line Graph
 // Assuming the object is already setup - 
-void drawLineGraph(int x, int y, int w, int h, Object xObject, Object xObject, string xAttribute, string yAttribute, String aggr) {
+void drawLineGraph(int x, int y, int w, int h, Object xObject, string xAttribute, Object yObject, string yAttribute, String aggr) {
   fill(255,255,255);
   int xCount = getSize(xObject);
-  int yCount = getSize(yObject);
+  // int yCount = getSize(yObject);
   int xMax   = getMax(xObject, xAttribute);
+  // int xMax = 4;
   int xMin   = getMin(xObject, xAttribute);
+  // int xMin = 0;
   int yMax   = getMax(yObject, yAttribute);
   int yMin   = getMin(yObject, yAttribute);
 
@@ -44,12 +46,14 @@ void drawLineGraph(int x, int y, int w, int h, Object xObject, Object xObject, s
   float previous = null;
 
   for(var date in xObject){
-    float value = evalateAggr(aggr.toLowerCase(), object, yAttribute, date);
+    float value = evaluateAggr(aggr.toLowerCase(), yObject, yAttribute, xObject[date]);
+    console.log(value);
     int current = y-(value*heightScaler);
     if(previous != null){
       stroke(255);
       strokeWeight(1);
       line((i-1)*(widthScaler)+100, previous, i*(widthScaler)+100,current); 
+      console.log("here");
     }
     previous = current;
     i++;
@@ -270,9 +274,11 @@ void keyPressed() {
       graphBoxes.delete(graphBoxes.end.data);
     }
   }
+    drawLineGraph(100, 350, 600, 300, currentMonths, "acq_date", stateEntires, "confidence", "Sum");
 }
 
 void javaClicked(){
+  console.log("here");
     if(javascript != null){
       num = javascript.findStates(selectedState);
     }

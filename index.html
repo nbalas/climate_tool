@@ -25,6 +25,9 @@
     var selectedState = "";
     var currentDataset = modis_2001_states;
     var map;
+    var currentMonths = {1 : "01", 2 : "02", 3 : "03", 4 : "04", 5: "05"};
+    var stateEntires = {};
+    var stateEntires = filterByState(currentDataset, "Minnesota");
 
     var graphBoxes = new List();
     var pjs;
@@ -71,7 +74,7 @@
 		    	else {states[code] = 1;}
 		    	sendClick();
 		    	console.log(selectedState);
-		    	var stateEntires = filterDateRange("2001-01-01", "2001-03-01");
+		    	var stateEntires = filterByState(currentDataset, currState);
 		    	console.log(stateEntires);
 		    	// var avg = averages(stateEntires);
 		    	// console.log(avg);
