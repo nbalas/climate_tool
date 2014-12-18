@@ -22,6 +22,16 @@ function graphBox(x,y,w,h) {
 	this.sInitX = 0;
 	this.sInitY = 0;
 
+	this.axisY = "";
+	this.graphType = "";
+	this.year = "";
+	this.startMonth = "";
+	this.endMonth = "";
+	this.aggr = "";
+
+	this.xObject =currentMonths_12;
+	this.yObject;
+
 	this.r = 0;
 	this.g = 0;
 	this.b = 0;

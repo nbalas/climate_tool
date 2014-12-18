@@ -160,18 +160,18 @@ void expandGraphs() {
   graphBoxes.each(function(item) {if(item.data.selected) {item.data.x += (expandCount++)*20;}});
 }
 
-void testBoxCreate() {
-  var box1 = new graphBox(400,200,100,100);
-  box1.r = 255;
-  var box2 = new graphBox(350,200,50,50);
-  box2.g = 255;
-  /*var box3 = new graphBox(500,200,50,50);
-  box3.b = 255;*/
-  graphBoxes.add(box1);
-  graphBoxes.add(box2);
-  //graphBoxes.add(box3);
-  console.log("test boxes created");
-}
+// void testBoxCreate() {
+//   var box1 = new graphBox(400,200,100,100);
+//   box1.r = 255;
+//   var box2 = new graphBox(350,200,50,50);
+//   box2.g = 255;
+//   var box3 = new graphBox(500,200,50,50);
+//   box3.b = 255;
+//   graphBoxes.add(box1);
+//   graphBoxes.add(box2);
+//   //graphBoxes.add(box3);
+//   console.log("test boxes created");
+// }
 
 int num;
 
@@ -214,7 +214,6 @@ void setup() {
     numberOfDays++;
   }
   console.log("setup complete");
-  testBoxCreate();
 }
 
 void draw(){
@@ -236,11 +235,14 @@ void draw(){
     //stroke(0,0,0);
     if(item.data.selector){rect(item.data.x, item.data.y, item.data.w, item.data.h);}
     else{
-    rect(item.data.x, item.data.y, item.data.w, item.data.h);
-    fill(color(item.data.r,item.data.g,item.data.b,item.data.a));
-    item.data.drawSingleSpiral(item.data.x, item.data.y, 2*item.data.w, 2/*item.data.h*/);
+      rect(item.data.x, item.data.y, item.data.w, item.data.h);
+      fill(color(item.data.r,item.data.g,item.data.b,item.data.a));
+      item.data.drawSingleSpiral(item.data.x, item.data.y, 2*item.data.w, 2/*item.data.h*/);
+      if(item.data.graphType == "Line"){item.data.drawLineGraph(this.x,this.y,this.w,this.h);}
+      if(item.data.graphType == "Spiral"){item.data.drawSingleSpiral(this.x,this.y,this.w,this.h);}
+      if(item.data.graphType == "Intensity"){item.data.drawIntensityBar(this.x,this.y,this.w,this.h);}
     //drawSingleSpiral(400, 200, 300, 2);
-  }
+    }
   });
     // drawLineGraph(100, 350, 600, 300, currentMonths, "acq_date", stateEntires, "confidence", "Sum");
 
@@ -252,7 +254,7 @@ void mousePressed(){
     //   num = javascript.findStates(selectedState);
     // }
     //console.log("clicked at X:" + mouseX + " Y:" + mouseY);
-    drawSingleSpiral(200, 350, 200, 30, currentMonths, "acq_date", stateEntires, "confidence", "Count", 100);
+    //drawSingleSpiral(200, 350, 200, 30, currentMonths, "acq_date", stateEntires, "confidence", "Count", 100);
 
 
     var current = graphBoxes.end;
