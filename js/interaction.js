@@ -11,6 +11,8 @@ function graphBox(x,y,w,h) {
 	this.xOffset = 0;
 	this.yOffset = 0;
 
+	this.state = "";
+
 	this.transformLock = false;
 	this.xTransform = 0;
 	this.yTransform = 0;

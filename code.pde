@@ -246,7 +246,7 @@ void draw(){
       rect(item.data.x, item.data.y, item.data.w, item.data.h);
     }
     else{
-      fill(color(255,123,13), 128);
+      fill(item.data.r,item.data.g,item.data.b, 128);
       //console.log("no selector");
       if(item.data.selected){stroke(0, 0, 200);}
       rect(item.data.x, item.data.y, item.data.w, item.data.h);

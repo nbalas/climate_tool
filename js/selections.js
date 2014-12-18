@@ -71,6 +71,7 @@ function updateGraph() {
       current.data.startMonth = month1;
       current.data.endMonth = month2;
       current.data.aggr = aggr;
+      current.data.state = selectedState;
       var start = year + "-" + month1 + "-01";
       var end = year + "-" + month2 + "-01";
       current.data.yObject = filterDateRange(filterByState(currentDataset, selectedState), start, end);
@@ -87,6 +88,10 @@ function updateGraph() {
     box1.startMonth = month1;
     box1.endMonth = month2;
     box1.aggr = aggr;
+    box1.state = selectedState;
+    box1.r = Math.random()*255;
+    box1.g = Math.random()*255;
+    box1.b = Math.random()*255;
     var start = year + "-" + month1 + "-01";
     var end = year + "-" + month2 + "-01";
     console.log(end);
