@@ -1,4 +1,4 @@
-var x;
+var x = "acq_date";
 var y= "brightness";
 var graphType="Line";
 var year = "2001";
@@ -47,7 +47,7 @@ function selectEvent(menu) {
   }
   if (menu == "graphSelection") {
     console.log("updating graph type");
-    graphType = select.selectedIndex;
+    graphType = select.options[select.selectedIndex].text;
   }
   if (menu == "yearSelection") {
     console.log("updating year");
@@ -63,7 +63,7 @@ function selectEvent(menu) {
   }
   if (menu == "modeSelection") {
     console.log("updating aggregation mode");
-    aggr = select.selectedIndex;
+    aggr = select.options[select.selectedIndex].text;
   }
 }
 
@@ -85,7 +85,8 @@ function updateGraph() {
     var w = 100; //graph width
     var h = 100; //graph height
     console.log("I am almost drawing!");
-    drawLineGraph(xp, yp, w, h, currentMonths, x, yObject, y, aggr);
+    console.log(aggr);
+    pjs.drawLineGraph(xp, yp, w, h, currentMonths_12, x, yObject, y, aggr);
 
 
 

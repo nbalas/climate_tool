@@ -18,9 +18,9 @@
     <script src="js/selections.js"></script>
     <script type="javascript" src="js/processing.js"></script>
 	<script src="file:data/modis_2001_states.jsonp"></script>
-	<script src="file:data/TMP.jsonp"></script>
-	<script src="file:data/CAPE.jsonp"></script>
-	<script src="file:data/APCP.jsonp"></script>
+	<script src="file:data/2001/done/TMP.jsonp"></script>
+	<script src="file:data/2001/done/CAPE.jsonp"></script>
+	<script src="file:data/2001/done/APCP.jsonp"></script>
 
 	<script type="text/javascript">
     var states = new Array(51);
@@ -28,7 +28,8 @@
     var selectedState = "";
     var currentDataset = modis_2001_states;
     var map;
-    var currentMonths = {1 : "01", 2 : "02", 3 : "03", 4 : "04", 5: "05", min: {acq_date:"01"}, max: {acq_date:"05"}};
+    var currentMonths_5 = {1 : "01", 2 : "02", 3 : "03", 4 : "04", 5: "05", min: {acq_date:"01"}, max: {acq_date:"05"}};
+    var currentMonths_12 = {1 : "01", 2 : "02", 3 : "03", 4 : "04", 5: "05", 6: "06", 7: "07", 8: "08", 9: "09", 10: "10", 11: "11", 12: "12", min: {acq_date:"01"}, max: {acq_date:"12"}};
     var stateEntires = {};
     var stateEntires = filterByState(currentDataset, "Minnesota");
 	  var graphBoxes = new List();
