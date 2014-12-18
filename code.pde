@@ -224,8 +224,10 @@ void draw(){
     //stroke(0,0,0);
     if(item.data.selector){rect(item.data.x, item.data.y, item.data.w, item.data.h);}
     else{
+    rect(item.data.x, item.data.y, item.data.w, item.data.h);
     fill(color(item.data.r,item.data.g,item.data.b,item.data.a));
-    item.data.drawLineGraph(item.data.x, item.data.y, item.data.w, item.data.h);
+    item.data.drawSingleSpiral(item.data.x, item.data.y, 2*item.data.w, 2/*item.data.h*/);
+    //drawSingleSpiral(400, 200, 300, 2);
   }
   });
     // drawLineGraph(100, 350, 600, 300, currentMonths, "acq_date", stateEntires, "confidence", "Sum");
