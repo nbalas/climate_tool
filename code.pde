@@ -86,24 +86,32 @@ void drawIntensityBar(int x, int y, int w, int h, Object xObject, string xAttrib
     }
 }
 
-void drawSingleSpiral(int x, int y, int r, int weight) {
-  float degree = 360/numberOfDays;
-  int i = 1;
+void drawSingleSpiral(int x, int y, int w, int h, Object xObject, string xAttribute, Object yObject, string yAttribute, String aggr, int r) {
+  float xCount = 4;//(float) getSize(xObject) - 2;
+  float degree = 360/xCount;
+  float xMax   = (float) getMax(xObject, xAttribute);
+  float xMin   = (float) getMin(xObject, xAttribute);
+  float yMax   = (float) getMax(yObject, yAttribute);
+  float yMin   = (float) getMin(yObject, yAttribute);
+  float thing  = x-w;
+  float widthScaler = (float)(w*2)/xCount;
+  float heightScaler = (float)(h*2)/(float)(yMax-yMin); 
   float startRad = 0;
-  strokeWeight(weight);
+  strokeWeight(3);
+  int i = 1;
   
-  for(var z in dateFireCount){
+  for(var date in xObject){
     // histogram
-    int fireCount = dateFireCount[z].count;    
-	int color = 255*(fireCount/maxFirePtDayCount);
+    float value = evaluateAggr(aggr.toLowerCase(), yObject, yAttribute, xObject[date]);
+    int color = 255*(value/yMax);
     fill(color,0,0);
     stroke(color,0,0);
-	float endRad = radians(i*degree);
+	  float endRad = radians(i*degree);
 	
     noFill();
     arc(x, y, r, r, startRad, endRad, open);
-	startRad = endRad;
-	i++
+	  startRad = endRad;
+	  i++
   }
 }
 
@@ -244,7 +252,7 @@ void mousePressed(){
     //   num = javascript.findStates(selectedState);
     // }
     //console.log("clicked at X:" + mouseX + " Y:" + mouseY);
-    drawIntensityBar(100, 350, 100, 10, currentMonths, "acq_date", stateEntires, "confidence", "Count");
+    drawSingleSpiral(200, 350, 200, 30, currentMonths, "acq_date", stateEntires, "confidence", "Count", 100);
 
 
     var current = graphBoxes.end;
