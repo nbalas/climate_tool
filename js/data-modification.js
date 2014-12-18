@@ -21,11 +21,11 @@ function getSize(object) {
 }
 
 function getMin(object, attribute) {
-  return eval('object.min' + attribute);
+  return eval('object.min.' + attribute);
 }
 
 function getMax(object, attribute) {
-  return eval('object.max' + attribute);
+  return eval('object.max.' + attribute);
 }
 
 function sum(object, attribute, date) {
@@ -35,10 +35,8 @@ function sum(object, attribute, date) {
     if (typeof object[entry].acq_date != 'number'){
       var dateArray = object[entry].acq_date.split('-');
       var month     = dateArray[1];
-      // console.log(month + " : " + date);
       if(month == date){
         var current = eval('object[entry].' + attribute);
-        // console.log(current);
         sum = sum + parseInt(current);
       }      
     }
@@ -48,29 +46,35 @@ function sum(object, attribute, date) {
 
 function average(object, attribute, date) {
   var sum = 0;
-  var numEntries = 0;
+  var count = 0;
+  // console.log(object);
   for(var entry in object){
-    var dateArray = object[entry].acq_date.split('-');
-    var month     = dateArray[1];
-    if(month == date){
-      var current = eval('object[entry].' + attribute);
-      sum = sum + current;
-      numEntries++;
+    if (typeof object[entry].acq_date != 'number'){
+      var dateArray = object[entry].acq_date.split('-');
+      var month     = dateArray[1];
+      if(month == date){
+        var current = eval('object[entry].' + attribute);
+        sum = sum + parseInt(current);
+        count++;
+      }      
     }
   }
-  return sum / numEntries;
+  return sum / count;
 }
 
 function count(object, attribute, date) {
-  var numEntries = 0;
+  var count = 0;
+  // console.log(object);
   for(var entry in object){
-    var dateArray = object[entry].acq_date.split('-');
-    var month     = dateArray[1];
-    if(month == date){
-      numEntries++;
+    if (typeof object[entry].acq_date != 'number'){
+      var dateArray = object[entry].acq_date.split('-');
+      var month     = dateArray[1];
+      if(month == date){
+        count++;
+      }      
     }
   }
-  return numEntries;
+  return count;
 }
 
 function evaluateAggr(aggr, object, attribute, date) {

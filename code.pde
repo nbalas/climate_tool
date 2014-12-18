@@ -11,8 +11,8 @@ interface Javascript{
   //function delcarations
   int findStates(String state);
   int getSize(Object obj);
-  int getMax(Object obj, String attribute);
-  int getMin(Object obj, String attribute);
+  float getMax(Object obj, String attribute);
+  float getMin(Object obj, String attribute);
   float average(Object obj, String attribute, String date);
   float sum(Object obj, String attribute, String date);
   float count(Object obj, String attribute, String date);
@@ -32,31 +32,26 @@ JavaScript javascript;
 // Assuming the object is already setup - 
 void drawLineGraph(int x, int y, int w, int h, Object xObject, string xAttribute, Object yObject, string yAttribute, String aggr) {
   fill(255,255,255);
-  int xCount = (int) getSize(xObject);
+  float xCount = 4;//(float) getSize(xObject) - 2;
   // int yCount = getSize(yObject);
-  int xMax   = (int) getMax(xObject, xAttribute);
+  float xMax   = (float) getMax(xObject, xAttribute);
   // int xMax = 4;
-  int xMin   = (int) getMin(xObject, xAttribute);
+  float xMin   = (float) getMin(xObject, xAttribute);
   // int xMin = 0;
-  int yMax   = (int) getMax(yObject, yAttribute);
-  int yMin   = (int) getMin(yObject, yAttribute);
-
-  float widthScaler = (int)(w*2)/(float)xCount;
-  float heightScaler = (int)(h*2)/(float)(yMax-yMin); // do we want the graph to scale between the min/max value? or not?
+  float yMax   = (float) getMax(yObject, yAttribute);
+  float yMin   = (float) getMin(yObject, yAttribute);
+  float thing  = x-w;
+  float widthScaler = (float)(w*2)/xCount;
+  float heightScaler = (float)(h*2)/(float)(yMax-yMin); // do we want the graph to scale between the min/max value? or not?
   int i = 0;
   float previous = null;
-  console.log("stuff: " + (yMax-yMin));
-  console.log("height " + heightScaler);
   for(var date in xObject){
     float value = evaluateAggr(aggr.toLowerCase(), yObject, yAttribute, xObject[date]);
-    console.log(value);
     int current = (y+h)-(value*heightScaler);
     if(previous != null){
       stroke(255);
       strokeWeight(1);
-      console.log((i-1)*(widthScaler)+(x-w) + ", " + previous + ", " + i*(widthScaler)+(x-w) + ", " + current);
-      line((i-1)*(widthScaler)+(x-w), previous, i*(widthScaler)+(x-w),current); 
-      console.log("here");
+      line((i-1)*(widthScaler)+(int)thing, previous, i*(widthScaler)+(int)thing,current); 
     }
     previous = current;
     i++;
@@ -243,7 +238,7 @@ void mousePressed(){
     //   num = javascript.findStates(selectedState);
     // }
     //console.log("clicked at X:" + mouseX + " Y:" + mouseY);
-    drawLineGraph(100, 350, 600, 300, currentMonths, "acq_date", stateEntires, "confidence", "Sum");
+    drawLineGraph(100, 350, 600, 300, currentMonths, "acq_date", stateEntires, "confidence", "Count");
 
 
     var current = graphBoxes.end;
