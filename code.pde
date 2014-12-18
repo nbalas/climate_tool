@@ -27,6 +27,7 @@ void bindJavascript(Javascript js){
 
 JavaScript javascript;
 
+
 // Generic Line Graph
 // Assuming the object is already setup - 
 void drawLineGraph(int x, int y, int w, int h, Object xObject, string xAttribute, Object yObject, string yAttribute, String aggr) {
@@ -65,7 +66,7 @@ void drawLineGraph(int x, int y, int w, int h, Object xObject, string xAttribute
 void drawIntensityBar(int x, int y, int w, int h) {
   fill(255,255,255);
   int spacer = 0;
-  float widthOfBar = w/numberOfDays;
+  float widthOfBar = (2*w)/numberOfDays;
   int i = 0;
   
   for(var z in dateFireCount){
@@ -74,7 +75,7 @@ void drawIntensityBar(int x, int y, int w, int h) {
     int color = 255*(fireCount/maxFirePtDayCount);
     fill(color,0,0);
     stroke(color,0,0);
-    rect(i*(widthOfBar+spacer)+x, y,widthOfBar-spacer, h);
+    rect(i*(widthOfBar+spacer)+x-w, y,widthOfBar-spacer, h);
 	
 	int positionInGraph = Math.round(i*(widthOfBar+spacer)+100);
 	if(mouseX == positionInGraph){
@@ -107,17 +108,61 @@ void drawSingleSpiral(int x, int y, int r, int weight) {
   }
 }
 
+void deleteGraphs() {
+  graphBoxes.each(function(item) {
+    if(item.data.selected) {console.log("Deleting"); graphBoxes.delete(item.data); console.log("Deleted");}
+  });
+}
+
+void snapGraphs() {
+  graphBoxes.each(function(item) {
+    if(item.data.selected) {item.data.x = mouseX; item.data.y = mouseY;}
+  });
+}
+
+void snapGraphsDim() {
+  var maxHeight = 0;
+  var maxWidth = 0;
+  graphBoxes.each(function(item) {
+    if(item.data.selected) {
+      if(item.data.h > maxHeight)
+      {
+          maxHeight = item.data.h;
+      }
+      if(item.data.w > maxWidth)
+      {
+          maxWidth = item.data.w;
+      }
+    }
+  });
+  graphBoxes.each(function(item) {
+    if(item.data.selected) {item.data.h = maxHeight; item.data.w = maxWidth;}
+  });
+}
+
+void selectAll() {
+  graphBoxes.each(function(item) {item.data.selected = true;});
+}
+
+void deselectAll() {
+  graphBoxes.each(function(item) {item.data.selected = false;});
+}
+
+void expandGraphs() {
+  var expandCount = 0;
+  graphBoxes.each(function(item) {if(item.data.selected) {item.data.x += (expandCount++)*20;}});
+}
 
 void testBoxCreate() {
-  var box1 = new graphBox(200,200,50,50);
+  var box1 = new graphBox(400,200,100,100);
   box1.r = 255;
   var box2 = new graphBox(350,200,50,50);
   box2.g = 255;
-  var box3 = new graphBox(500,200,50,50);
-  box3.b = 255;
+  /*var box3 = new graphBox(500,200,50,50);
+  box3.b = 255;*/
   graphBoxes.add(box1);
   graphBoxes.add(box2);
-  graphBoxes.add(box3);
+  //graphBoxes.add(box3);
   console.log("test boxes created");
 }
 
@@ -174,14 +219,19 @@ void draw(){
   fill(color(255,123,13), 128);
   text("Data: " + num + " elements of " + selectedState, 50, 90);
   
-  // drawLineGraph(100,350, 600, 300);
+  //drawLineGraph(100,350, 600, 300);
   // drawIntensityBar(100,380, 600, 10);
   //drawSingleSpiral(400, 200, 300, 2);
   graphBoxes.each(function(item) {
-    if(item.data.selected) {stroke(0, 102, 204);}
+    //if(item.data.selected) {stroke(0, 102, 204);}
+    
+    //rect(item.data.x, item.data.y, item.data.w, item.data.h);
+    //stroke(0,0,0);
+    if(item.data.selector){rect(item.data.x, item.data.y, item.data.w, item.data.h);}
+    else{
     fill(color(item.data.r,item.data.g,item.data.b,item.data.a));
-    rect(item.data.x, item.data.y, item.data.w, item.data.h);
-    stroke(0,0,0);
+    item.data.drawLineGraph(item.data.x, item.data.y, item.data.w, item.data.h);
+  }
   });
     // drawLineGraph(100, 350, 600, 300, currentMonths, "acq_date", stateEntires, "confidence", "Sum");
 
@@ -195,10 +245,15 @@ void mousePressed(){
     //console.log("clicked at X:" + mouseX + " Y:" + mouseY);
     drawLineGraph(100, 350, 600, 300, currentMonths, "acq_date", stateEntires, "confidence", "Sum");
 
+
     var current = graphBoxes.end;
     while(current !== null) {
-      current.data.selected = false;
-      if(current.data.intersect(mouseX,mouseY) != null) {
+      
+      //current.data.selected = false;
+      //console.log(current.data.intersect(mouseX,mouseY));
+      if(current.data.intersect(mouseX,mouseY) != null) { //hit something
+        //console.log("intersected");
+        if(current.data.selected==false) {graphBoxes.each(function(item) {item.data.selected = false;});}
         //current.data.locked = true;
         current.data.selected = true;
         graphBoxes.delete(current.data);
@@ -209,12 +264,13 @@ void mousePressed(){
     }
 
     //Not clicking a graph, create selection rectangle
+    graphBoxes.each(function(item) {item.data.selected = false;});
+    graphBoxes.selectCount = 0;
     graphBoxes.add(new graphBox(mouseX,mouseY,0,0));
     graphBoxes.end.data.locked = true;
     graphBoxes.end.data.selector = true;
     graphBoxes.end.data.sInitX = mouseX;
     graphBoxes.end.data.sInitY = mouseY;
-
 }
 
 void mouseReleased(){
@@ -233,9 +289,10 @@ void mouseReleased(){
       var current = graphBoxes.end.prev;
       while(current !== null) {
         if(current.data.inside(graphBoxes.end.data.x, graphBoxes.end.data.y,
-                                graphBoxes.end.data.w, graphBoxes.end.data.h) != null) {
+                                graphBoxes.end.data.w, graphBoxes.end.data.h)) {
           //current.data.locked = true;
           current.data.selected = true;
+          graphBoxes.selectCount++;
         }
         current = current.prev;
       }
@@ -250,34 +307,69 @@ void mouseDragged() {
         graphBoxes[i].y = mouseY - graphBoxes[i].yOffset;
       }
     }*/
-      if(graphBoxes.end.data.transformLock)
+      if(graphBoxes.end.data.transformLock) //stretch or shrink
       {
+        if(graphBoxes.selectCount>1) {
+          graphBoxes.revEach(function(item) {
+            if(item.data.selected) {
+              
+            item.data.w += (mouseX-pmouseX)*graphBoxes.end.data.xTransform;
+            item.data.h += (mouseY-pmouseY)*graphBoxes.end.data.yTransform;
+            }
+          });
+          return;
+        }
        graphBoxes.end.data.w += (mouseX-pmouseX)*graphBoxes.end.data.xTransform;
        graphBoxes.end.data.h += (mouseY-pmouseY)*graphBoxes.end.data.yTransform;
       }
-      else if(graphBoxes.end.data.translateLock)
+      else if(graphBoxes.end.data.translateLock)  //move around canvas
       {
+        if(graphBoxes.selectCount>1) {
+          graphBoxes.revEach(function(item) {
+            item.data.x += (mouseX-pmouseX);
+            item.data.y += (mouseY-pmouseY);
+          });
+          return;
+        }
        graphBoxes.end.data.x = mouseX - graphBoxes.end.data.xOffset;
        graphBoxes.end.data.y = mouseY - graphBoxes.end.data.yOffset;
       }
       else if(graphBoxes.end.data.selector)
       {
-
         graphBoxes.end.data.w += (mouseX-pmouseX)/2;
         graphBoxes.end.data.h += (mouseY-pmouseY)/2;
         graphBoxes.end.data.x = graphBoxes.end.data.sInitX + (graphBoxes.end.data.w);
-        //console.log(graphBoxes.end.data.sInitX);
         graphBoxes.end.data.y = graphBoxes.end.data.sInitY + (graphBoxes.end.data.h);
       }
 }
 
 void keyPressed() {
-  if(key == DELETE)
+  if(key == DELETE)   //delete graph
   {
-    if(graphBoxes.end.data.selected)
+      deleteGraphs();
+  }
+  if(key == ' ')    //snap to 'center' coordinates
+  {
+      snapGraphs();
+  }
+  if(key == CODED)
+  {
+    if(keyCode == ALT)  //snap width and height
     {
-      graphBoxes.delete(graphBoxes.end.data);
+        snapGraphsDim();
     }
+  }
+  if(key == 'e')
+  {
+    expandGraphs();
+  }
+  if(key == 'a')
+  {
+    selectAll();
+  }
+  if(key == 'd')
+  {
+    deselectAll();
   }
 }
 
