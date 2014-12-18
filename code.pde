@@ -10,6 +10,13 @@ HashMap<String, ArrayList<String>> dataByState = new HashMap<String, ArrayList<S
 interface Javascript{
   //function delcarations
   int findStates(String state);
+  int getSize(Object obj);
+  float getMax(Object obj, String attribute);
+  float getMin(Object obj, String attribute);
+  float average(Object obj, String attribute, String date);
+  float sum(Object obj, String attribute, String date);
+  float count(Object obj, String attribute, String date);
+  float evaluateAggr(String aggr, Object obj, String attribute, String date);
   Object filterDateRange(String startDate, String endDate);
   Object filterByState(String state);
 }
@@ -21,84 +28,148 @@ void bindJavascript(Javascript js){
 JavaScript javascript;
 
 
-// Line Graph
-void drawLineGraph(int x, int y, int w, int h) {
+// Generic Line Graph
+// Assuming the object is already setup - 
+void drawLineGraph(int x, int y, int w, int h, Object xObject, string xAttribute, Object yObject, string yAttribute, String aggr) {
   fill(255,255,255);
-  int spacer = 0;
-  float widthScaler = w/numberOfDays;
-  float heightScaler = h/maxFirePtDayCount;
+  float xCount = 4;//(float) getSize(xObject) - 2;
+  float xMax   = (float) getMax(xObject, xAttribute);
+  float xMin   = (float) getMin(xObject, xAttribute);
+  float yMax   = (float) getMax(yObject, yAttribute);
+  float yMin   = (float) getMin(yObject, yAttribute);
+  float thing  = x-w;
+  float widthScaler = (float)(w*2)/xCount;
+  float heightScaler = (float)(h*2)/(float)(yMax-yMin); // do we want the graph to scale between the min/max value? or not?
   int i = 0;
   float previous = null;
 
-  for(var z in dateFireCount){
-    int current = y-dateFireCount[z].count*heightScaler;
+  for(var date in xObject){
+    float value = evaluateAggr(aggr.toLowerCase(), yObject, yAttribute, xObject[date]);
+    int current = (y+h)-(value*heightScaler);
     if(previous != null){
       stroke(255);
       strokeWeight(1);
-	  //using width + spacer to match the intensity bar sizing
-      line((i-1)*(widthScaler+spacer)+100, previous, i*(widthScaler+spacer)+100,current); 
+      line((i-1)*(widthScaler)+(int)thing, previous, i*(widthScaler)+(int)thing,current); 
     }
     previous = current;
     i++;
   }
 }
 
-void drawIntensityBar(int x, int y, int w, int h) {
+void drawIntensityBar(int x, int y, int w, int h, Object xObject, string xAttribute, Object yObject, string yAttribute, String aggr) {
   fill(255,255,255);
-  int spacer = 0;
-  float widthOfBar = w/numberOfDays;
+  float xCount = 4;//(float) getSize(xObject) - 2;
+  float xMax   = (float) getMax(xObject, xAttribute);
+  float xMin   = (float) getMin(xObject, xAttribute);
+  float yMax   = (float) getMax(yObject, yAttribute);
+  float yMin   = (float) getMin(yObject, yAttribute);
+  float thing  = x-w;
+  float widthScaler = (float)(w*2)/xCount;
+  float heightScaler = (float)(h*2)/(float)(yMax-yMin); // do we want the graph to scale between the min/max value? or not?
   int i = 0;
   
-  for(var z in dateFireCount){
+  for(var date in xObject){
     // histogram
-    int fireCount = dateFireCount[z].count;
-    int color = 255*(fireCount/maxFirePtDayCount);
+    float value = evaluateAggr(aggr.toLowerCase(), yObject, yAttribute, xObject[date]);
+    int color = 255*(value/yMax);
     fill(color,0,0);
     stroke(color,0,0);
-    rect(i*(widthOfBar+spacer)+x, y,widthOfBar-spacer, h);
+    rect((i*(widthScaler)+thing), y-h, (widthScaler+thing), h);
 	
-	int positionInGraph = Math.round(i*(widthOfBar+spacer)+100);
-	if(mouseX == positionInGraph){
-      fill(255);
-      text(z+" had a fire presence count of: "+fireCount, 50, 105);
-    }
+  	int positionInGraph = Math.round(i*(widthScaler)+100);
+  	if(mouseX == positionInGraph){
+        fill(255);
+        text(date +" had a fire presence count of: "+value, 50, 105);
+      }
 
-    i++;
-  }
+      i++;
+    }
 }
 
-void drawSingleSpiral(int x, int y, int r, int weight) {
-  float degree = 360/numberOfDays;
-  int i = 1;
+void drawSingleSpiral(int x, int y, int w, int h, Object xObject, string xAttribute, Object yObject, string yAttribute, String aggr, int r) {
+  float xCount = 4;//(float) getSize(xObject) - 2;
+  float degree = 360/xCount;
+  float xMax   = (float) getMax(xObject, xAttribute);
+  float xMin   = (float) getMin(xObject, xAttribute);
+  float yMax   = (float) getMax(yObject, yAttribute);
+  float yMin   = (float) getMin(yObject, yAttribute);
+  float thing  = x-w;
+  float widthScaler = (float)(w*2)/xCount;
+  float heightScaler = (float)(h*2)/(float)(yMax-yMin); 
   float startRad = 0;
-  strokeWeight(weight);
+  strokeWeight(3);
+  int i = 1;
   
-  for(var z in dateFireCount){
+  for(var date in xObject){
     // histogram
-    int fireCount = dateFireCount[z].count;    
-	int color = 255*(fireCount/maxFirePtDayCount);
+    float value = evaluateAggr(aggr.toLowerCase(), yObject, yAttribute, xObject[date]);
+    int color = 255*(value/yMax);
     fill(color,0,0);
     stroke(color,0,0);
-	float endRad = radians(i*degree);
+	  float endRad = radians(i*degree);
 	
     noFill();
     arc(x, y, r, r, startRad, endRad, open);
-	startRad = endRad;
-	i++
+	  startRad = endRad;
+	  i++
   }
 }
 
+void deleteGraphs() {
+  graphBoxes.each(function(item) {
+    if(item.data.selected) {console.log("Deleting"); graphBoxes.delete(item.data); console.log("Deleted");}
+  });
+}
+
+void snapGraphs() {
+  graphBoxes.each(function(item) {
+    if(item.data.selected) {item.data.x = mouseX; item.data.y = mouseY;}
+  });
+}
+
+void snapGraphsDim() {
+  var maxHeight = 0;
+  var maxWidth = 0;
+  graphBoxes.each(function(item) {
+    if(item.data.selected) {
+      if(item.data.h > maxHeight)
+      {
+          maxHeight = item.data.h;
+      }
+      if(item.data.w > maxWidth)
+      {
+          maxWidth = item.data.w;
+      }
+    }
+  });
+  graphBoxes.each(function(item) {
+    if(item.data.selected) {item.data.h = maxHeight; item.data.w = maxWidth;}
+  });
+}
+
+void selectAll() {
+  graphBoxes.each(function(item) {item.data.selected = true;});
+}
+
+void deselectAll() {
+  graphBoxes.each(function(item) {item.data.selected = false;});
+}
+
+void expandGraphs() {
+  var expandCount = 0;
+  graphBoxes.each(function(item) {if(item.data.selected) {item.data.x += (expandCount++)*20;}});
+}
 
 void testBoxCreate() {
-  var box1 = new graphBox(200,200,50,50);
+  var box1 = new graphBox(400,200,100,100);
   box1.r = 255;
   var box2 = new graphBox(350,200,50,50);
   box2.g = 255;
-  var box3 = new graphBox(500,200,50,50);
-  box3.b = 255;
+  /*var box3 = new graphBox(500,200,50,50);
+  box3.b = 255;*/
   graphBoxes.add(box1);
   graphBoxes.add(box2);
-  graphBoxes.add(box3);
+  //graphBoxes.add(box3);
   console.log("test boxes created");
 }
 
@@ -155,15 +226,24 @@ void draw(){
   fill(color(255,123,13), 128);
   text("Data: " + num + " elements of " + selectedState, 50, 90);
   
-  // drawLineGraph(100,350, 600, 300);
+  //drawLineGraph(100,350, 600, 300);
   // drawIntensityBar(100,380, 600, 10);
   //drawSingleSpiral(400, 200, 300, 2);
   graphBoxes.each(function(item) {
-    if(item.data.selected) {stroke(0, 102, 204);}
-    fill(color(item.data.r,item.data.g,item.data.b,item.data.a));
+    //if(item.data.selected) {stroke(0, 102, 204);}
+    
+    //rect(item.data.x, item.data.y, item.data.w, item.data.h);
+    //stroke(0,0,0);
+    if(item.data.selector){rect(item.data.x, item.data.y, item.data.w, item.data.h);}
+    else{
     rect(item.data.x, item.data.y, item.data.w, item.data.h);
-    stroke(0,0,0);
+    fill(color(item.data.r,item.data.g,item.data.b,item.data.a));
+    item.data.drawSingleSpiral(item.data.x, item.data.y, 2*item.data.w, 2/*item.data.h*/);
+    //drawSingleSpiral(400, 200, 300, 2);
+  }
   });
+    // drawLineGraph(100, 350, 600, 300, currentMonths, "acq_date", stateEntires, "confidence", "Sum");
+
   
 }
 
@@ -172,11 +252,17 @@ void mousePressed(){
     //   num = javascript.findStates(selectedState);
     // }
     //console.log("clicked at X:" + mouseX + " Y:" + mouseY);
+    drawSingleSpiral(200, 350, 200, 30, currentMonths, "acq_date", stateEntires, "confidence", "Count", 100);
+
 
     var current = graphBoxes.end;
     while(current !== null) {
-      current.data.selected = false;
-      if(current.data.intersect(mouseX,mouseY) != null) {
+      
+      //current.data.selected = false;
+      //console.log(current.data.intersect(mouseX,mouseY));
+      if(current.data.intersect(mouseX,mouseY) != null) { //hit something
+        //console.log("intersected");
+        if(current.data.selected==false) {graphBoxes.each(function(item) {item.data.selected = false;});}
         //current.data.locked = true;
         current.data.selected = true;
         graphBoxes.delete(current.data);
@@ -187,12 +273,13 @@ void mousePressed(){
     }
 
     //Not clicking a graph, create selection rectangle
+    graphBoxes.each(function(item) {item.data.selected = false;});
+    graphBoxes.selectCount = 0;
     graphBoxes.add(new graphBox(mouseX,mouseY,0,0));
     graphBoxes.end.data.locked = true;
     graphBoxes.end.data.selector = true;
     graphBoxes.end.data.sInitX = mouseX;
     graphBoxes.end.data.sInitY = mouseY;
-
 }
 
 void mouseReleased(){
@@ -211,9 +298,10 @@ void mouseReleased(){
       var current = graphBoxes.end.prev;
       while(current !== null) {
         if(current.data.inside(graphBoxes.end.data.x, graphBoxes.end.data.y,
-                                graphBoxes.end.data.w, graphBoxes.end.data.h) != null) {
+                                graphBoxes.end.data.w, graphBoxes.end.data.h)) {
           //current.data.locked = true;
           current.data.selected = true;
+          graphBoxes.selectCount++;
         }
         current = current.prev;
       }
@@ -228,38 +316,74 @@ void mouseDragged() {
         graphBoxes[i].y = mouseY - graphBoxes[i].yOffset;
       }
     }*/
-      if(graphBoxes.end.data.transformLock)
+      if(graphBoxes.end.data.transformLock) //stretch or shrink
       {
+        if(graphBoxes.selectCount>1) {
+          graphBoxes.revEach(function(item) {
+            if(item.data.selected) {
+              
+            item.data.w += (mouseX-pmouseX)*graphBoxes.end.data.xTransform;
+            item.data.h += (mouseY-pmouseY)*graphBoxes.end.data.yTransform;
+            }
+          });
+          return;
+        }
        graphBoxes.end.data.w += (mouseX-pmouseX)*graphBoxes.end.data.xTransform;
        graphBoxes.end.data.h += (mouseY-pmouseY)*graphBoxes.end.data.yTransform;
       }
-      else if(graphBoxes.end.data.translateLock)
+      else if(graphBoxes.end.data.translateLock)  //move around canvas
       {
+        if(graphBoxes.selectCount>1) {
+          graphBoxes.revEach(function(item) {
+            item.data.x += (mouseX-pmouseX);
+            item.data.y += (mouseY-pmouseY);
+          });
+          return;
+        }
        graphBoxes.end.data.x = mouseX - graphBoxes.end.data.xOffset;
        graphBoxes.end.data.y = mouseY - graphBoxes.end.data.yOffset;
       }
       else if(graphBoxes.end.data.selector)
       {
-
         graphBoxes.end.data.w += (mouseX-pmouseX)/2;
         graphBoxes.end.data.h += (mouseY-pmouseY)/2;
         graphBoxes.end.data.x = graphBoxes.end.data.sInitX + (graphBoxes.end.data.w);
-        //console.log(graphBoxes.end.data.sInitX);
         graphBoxes.end.data.y = graphBoxes.end.data.sInitY + (graphBoxes.end.data.h);
       }
 }
 
 void keyPressed() {
-  if(key == DELETE)
+  if(key == DELETE)   //delete graph
   {
-    if(graphBoxes.end.data.selected)
+      deleteGraphs();
+  }
+  if(key == ' ')    //snap to 'center' coordinates
+  {
+      snapGraphs();
+  }
+  if(key == CODED)
+  {
+    if(keyCode == ALT)  //snap width and height
     {
-      graphBoxes.delete(graphBoxes.end.data);
+        snapGraphsDim();
     }
+  }
+  if(key == 'e')
+  {
+    expandGraphs();
+  }
+  if(key == 'a')
+  {
+    selectAll();
+  }
+  if(key == 'd')
+  {
+    deselectAll();
   }
 }
 
 void javaClicked(){
+  console.log("here");
     if(javascript != null){
       num = javascript.findStates(selectedState);
     }
