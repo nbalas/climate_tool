@@ -32,7 +32,7 @@ JavaScript javascript;
 // Assuming the object is already setup - 
 void drawLineGraph(int x, int y, int w, int h, Object xObject, string xAttribute, Object yObject, string yAttribute, String aggr) {
   fill(255,255,255);
-  float xCount = 4;//(float) getSize(xObject) - 2;
+  float xCount = 12;//(float) getSize(xObject) - 2;
   float xMax   = (float) getMax(xObject, xAttribute);
   float xMin   = (float) getMin(xObject, xAttribute);
   // float yMax   = (float) getMax(yObject, yAttribute);
@@ -55,8 +55,8 @@ void drawLineGraph(int x, int y, int w, int h, Object xObject, string xAttribute
   float widthScaler = (float)(w*2)/xCount;
   float heightScaler = (float)(h*2)/(float)(yMax); // do we want the graph to scale between the min/max value? or not?
 
-  console.log('yMax: ' + yMax + ' yMin: ' + yMin);
-  console.log('widthScaler: ' + widthScaler + ' heightScaler: ' + heightScaler);
+  //console.log('yMax: ' + yMax + ' yMin: ' + yMin);
+  //console.log('widthScaler: ' + widthScaler + ' heightScaler: ' + heightScaler);
 
   for(var date in xObject){
     value = evaluateAggr(aggr.toLowerCase(), yObject, yAttribute, xObject[date]);
@@ -64,7 +64,7 @@ void drawLineGraph(int x, int y, int w, int h, Object xObject, string xAttribute
     if(value == NaN){
       value = 0;
     }
-    console.log('current: ' + current + " value: " + value);
+    //console.log('current: ' + current + " value: " + value);
     if(previous != null){
       stroke(255);
       strokeWeight(1);
@@ -77,7 +77,7 @@ void drawLineGraph(int x, int y, int w, int h, Object xObject, string xAttribute
 
 void drawIntensityBar(int x, int y, int w, int h, Object xObject, string xAttribute, Object yObject, string yAttribute, String aggr) {
   fill(255,255,255);
-  float xCount = 4;//(float) getSize(xObject) - 2;
+  float xCount = 12;//(float) getSize(xObject) - 2;
   float xMax   = (float) getMax(xObject, xAttribute);
   float xMin   = (float) getMin(xObject, xAttribute);
   float yMax = -99999, yMin = 99999;
@@ -116,7 +116,7 @@ void drawIntensityBar(int x, int y, int w, int h, Object xObject, string xAttrib
 }
 
 void drawSingleSpiral(int x, int y, int w, int h, Object xObject, string xAttribute, Object yObject, string yAttribute, String aggr, int r) {
-  float xCount = 4;//(float) getSize(xObject) - 2;
+  float xCount = 12;//(float) getSize(xObject) - 2;
   float degree = 360/xCount;
   float xMax   = (float) getMax(xObject, xAttribute);
   float xMin   = (float) getMin(xObject, xAttribute);
@@ -242,16 +242,24 @@ void draw(){
     //rect(item.data.x, item.data.y, item.data.w, item.data.h);
     //stroke(0,0,0);
     if(item.data.selector){
+      noFill();
       rect(item.data.x, item.data.y, item.data.w, item.data.h);
     }
     else{
+      fill(color(255,123,13), 128);
+      //console.log("no selector");
+      if(item.data.selected){stroke(0, 0, 200);}
       rect(item.data.x, item.data.y, item.data.w, item.data.h);
-      fill(color(item.data.r,item.data.g,item.data.b,item.data.a));
-      item.data.drawSingleSpiral(item.data.x, item.data.y, 2*item.data.w, 2/*item.data.h*/);
+      stroke(0, 0, 200);
+      //fill(color(item.data.r,item.data.g,item.data.b,item.data.a));
+      //item.data.drawSingleSpiral(item.data.x, item.data.y, 2*item.data.w, 2/*item.data.h*/);
 
-      if(item.data.graphType == "Line"){item.data.drawLineGraph(this.x,this.y,this.w,this.h);}
-      if(item.data.graphType == "Spiral"){item.data.drawSingleSpiral(this.x,this.y,this.w,this.h);}
-      if(item.data.graphType == "Intensity"){item.data.drawIntensityBar(this.x,this.y,this.w,this.h);}
+      if(item.data.graphType == "Line"){item.data.drawLineGraph(item.data.x,item.data.y,item.data.w,item.data.h,
+                        item.data.xObject,item.data.axisX,item.data.yObject,item.data.axisY,item.data.aggr);}
+      if(item.data.graphType == "Spiral"){item.data.drawSingleSpiral(item.data.x,item.data.y,item.data.w,item.data.h,
+                        item.data.xObject,item.data.axisX,item.data.yObject,item.data.axisY,item.data.aggr,1);}
+      if(item.data.graphType == "Intensity"){item.data.drawIntensityBar(item.data.x,item.data.y,item.data.w,item.data.h,
+                        item.data.xObject,item.data.axisX,item.data.yObject,item.data.axisY,item.data.aggr);}
     //drawSingleSpiral(400, 200, 300, 2);
     }
   });
@@ -316,8 +324,8 @@ void mouseReleased(){
         }
         current = current.prev;
       }
-      graphBoxes.delete(graphBoxes.end.data);
     }
+    if(graphBoxes.end.data.selector){graphBoxes.delete(graphBoxes.end.data);}
 }
 
 void mouseDragged() {
