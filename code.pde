@@ -10,6 +10,13 @@ HashMap<String, ArrayList<String>> dataByState = new HashMap<String, ArrayList<S
 interface Javascript{
   //function delcarations
   int findStates(String state);
+  int getSize(Object obj);
+  int getMax(Object obj, String attribute);
+  int getMin(Object obj, String attribute);
+  float average(Object obj, String attribute, String date);
+  float sum(Object obj, String attribute, String date);
+  float count(Object obj, String attribute, String date);
+  float evalateAggr(String aggr, Object obj, String attribute, String date);
   Object filterDateRange(String startDate, String endDate);
   Object filterByState(String state);
 }
@@ -21,23 +28,29 @@ void bindJavascript(Javascript js){
 JavaScript javascript;
 
 
-// Line Graph
-void drawLineGraph(int x, int y, int w, int h) {
-  rect(x,y,w,h);
+// Generic Line Graph
+// Assuming the object is already setup - 
+void drawLineGraph(int x, int y, int w, int h, Object xObject, Object xObject, string xAttribute, string yAttribute, String aggr) {
   fill(255,255,255);
-  int spacer = 0;
-  float widthScaler = (2*w)/numberOfDays;
-  float heightScaler = (2*h)/maxFirePtDayCount;
+  int xCount = getSize(xObject);
+  int yCount = getSize(yObject);
+  int xMax   = getMax(xObject, xAttribute);
+  int xMin   = getMin(xObject, xAttribute);
+  int yMax   = getMax(yObject, yAttribute);
+  int yMin   = getMin(yObject, yAttribute);
+
+  float widthScaler = (w*2)/xCount;
+  float heightScaler = (h*2)-(xMin/xMax); // do we want the graph to scale between the min/max value? or not?
   int i = 0;
   float previous = null;
 
-  for(var z in dateFireCount){
-    int current = (y+h)-dateFireCount[z].count*heightScaler;
+  for(var date in xObject){
+    float value = evalateAggr(aggr.toLowerCase(), object, yAttribute, date);
+    int current = y-(value*heightScaler);
     if(previous != null){
       stroke(255);
       strokeWeight(1);
-	  //using width + spacer to match the intensity bar sizing
-      line((i-1)*(widthScaler+spacer)+x-w, previous, i*(widthScaler+spacer)+x-w,current); 
+      line((i-1)*(widthScaler)+100, previous, i*(widthScaler)+100,current); 
     }
     previous = current;
     i++;

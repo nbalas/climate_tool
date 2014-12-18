@@ -1,16 +1,20 @@
 var x;
 var y;
 var graphType;
+var year;
+var month1;
+var month2;
+var mode;
 
 function selectionLoad() {
-  var select = document.getElementById("xSelection");
+  //var select = document.getElementById("xSelection");
   var select2 = document.getElementById("ySelection");
 
   for (var attribute in currentDataset[0]) {
-    var el = document.createElement("option");
-    el.text = attribute;
-    el.value = attribute;
-    select.appendChild(el);
+    //var el = document.createElement("option");
+    //el.text = attribute;
+    //el.value = attribute;
+    //select.appendChild(el);
 
     var el1 = document.createElement("option");
     el1.text = attribute;
@@ -43,12 +47,56 @@ function selectEvent(menu) {
   }
   if (menu == "graphSelection") {
     console.log("updating graph type");
-    graphType = select.selectedIndex
+    graphType = select.selectedIndex;
+  }
+  if (menu == "yearSelection") {
+    console.log("updating year");
+    year = select.options[select.selectedIndex].text;
+  }
+  if (menu == "month1Selection") {
+    console.log("updating month 1");
+    month1 = select.options[select.selectedIndex].text;
+  }
+  if (menu == "month2Selection") {
+    console.log("updating month 2");
+    month2 = select.options[select.selectedIndex].text;
+  }
+  if (menu == "modeSelection") {
+    console.log("updating aggregation mode");
+    mode = select.selectedIndex;
   }
 }
 
 function updateGraph() {
-  if (x != null && y != null && graphType != null) {
-    console.log("would update graph")
+  if (/*x != null &&*/y != null && graphType != null) {
+    var start = year + "-" + month1 + "-01";
+    var end = year + "-" + month2 + "-01";
+    var object = filterDateRange(start, end, filterByState(selectedState));
+
+    //for(var i = 0; i < states.length(); i++){
+      //if (states[i] == 1) {
+      //}
+    // Checks if state(s) are selected, creates graph for selected graphs.
+    // If no states are checked, loop over data to create graph
+    //}
+    //else{
+      //get size of graph box if selected, otherwise make generic sized node to contain graph
+      // send data to graph
+
+    //}
+
+    /*
+    what can we do with a seleceted attribute combination?
+    date on x - other value on y
+      single date for spot on y/bucket ranges per spot on y
+        could count occurance of value
+        sum total value for date
+        average value - average for that day
+        percent of total presence over days
+        How do we determine intention?
+    value n x -
+      bucket ranges? increasing in value
+
+    */
   }
 }
