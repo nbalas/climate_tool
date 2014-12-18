@@ -47,7 +47,7 @@ function selectEvent(menu) {
   }
   if (menu == "graphSelection") {
     console.log("updating graph type");
-    graphType = select.selectedIndex;
+    graphType = select.options[select.selectedIndex].text;
   }
   if (menu == "yearSelection") {
     console.log("updating year");
@@ -68,9 +68,32 @@ function selectEvent(menu) {
 }
 
 function updateGraph() {
-  if (/*x != null &&*/y != null && graphType != null) {
+  var wasSelected = false;
+  var current = graphBoxes.end;
+  while(current !== null) {
+    if(current.data.selected) {
+      var wasSelected = true;
+      current.data.axisY = y;
+      current.data.graphType = graphType;
+      current.data.year = year;
+      current.data.startMonth = month1;
+      current.data.endMonth = month2;
+      current.data.aggr = aggr;
+      var start = year + "-" + month1 + "-01";
+      var end = year + "-" + month2 + "-01";
+      var yObject = filterDateRange(filterByState(currentDataset, selectedState), start, end);
+    }
+  }
+  if(!wasSelected)
+  {
+    var box1 = new graphBox(400,200,100,100);
+    box1.axisY = y;
+    box1.graphType = graphType;
+    box1.year = year;
+    box1.startMonth = month1;
+    box1.endMonth = month2;
+    box1.aggr = aggr;
     var start = year + "-" + month1 + "-01";
-    console.log(start);
     var end = year + "-" + month2 + "-01";
     console.log(end);
     var yObject = filterDateRange(filterByState(currentDataset, selectedState), start, end);
@@ -85,21 +108,6 @@ function updateGraph() {
     var w = 100; //graph width
     var h = 100; //graph height
     console.log("I am almost drawing!");
-    console.log(aggr);
-    switch (graphType){
-      case 0:
-        pjs.drawLineGraph(xp, yp, w, h, currentMonths_12, x, yObject, y, aggr);
-        break;
-      case 1:
-        pjs.drawSingleSpiral(xp, yp, w, h, currentMonths_12, x, yObject, y, aggr, 60);
-        break;
-      case 2:
-        pjs.drawIntensityBar(xp, yp, w, h, currentMonths_12, x, yObject, y, aggr);
-        break;
-    }
-
-
-
 
     //for(var i = 0; i < states.length(); i++){
       //if (states[i] == 1) {
@@ -126,5 +134,54 @@ function updateGraph() {
       bucket ranges? increasing in value
 
     */
+    box1.yObject = filterDateRange(filterByState(currentDataset, selectedState), start, end);
+    graphBoxes.add(box1);
   }
+  // /*if (/*x != null &&*/y != null && graphType != null) {
+  //   var start = year + "-" + month1 + "-01";
+  //   console.log(start);
+  //   var end = year + "-" + month2 + "-01";
+  //   console.log(end);
+  //   var yObject = filterDateRange(filterByState(currentDataset, selectedState), start, end);
+
+  //   // Object xObject = currentMonths ////////TODOOOOOOOO
+  //   // string xAttribute = x
+  //   // string yAttribute = y
+  //   // String aggr
+
+  //   var xp = 300; // center x position
+  //   var yp = 200; // center y position
+  //   var w = 100; //graph width
+  //   var h = 100; //graph height
+  //   console.log("I am almost drawing!");
+  //   drawLineGraph(xp, yp, w, h, currentMonths, x, yObject, y, aggr);
+
+
+
+  //   //for(var i = 0; i < states.length(); i++){
+  //     //if (states[i] == 1) {
+  //     //}
+  //   // Checks if state(s) are selected, creates graph for selected graphs.
+  //   // If no states are checked, loop over data to create graph
+  //   //}
+  //   //else{
+  //     //get size of graph box if selected, otherwise make generic sized node to contain graph
+  //     // send data to graph
+
+  //   //}
+
+  //   /*
+  //   what can we do with a seleceted attribute combination?
+  //   date on x - other value on y
+  //     single date for spot on y/bucket ranges per spot on y
+  //       could count occurance of value
+  //       sum total value for date
+  //       average value - average for that day
+  //       percent of total presence over days
+  //       How do we determine intention?
+  //   value n x -
+  //     bucket ranges? increasing in value
+
+    
+  // }*/
 }
