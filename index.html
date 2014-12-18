@@ -1,70 +1,88 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-  <head>
-    <title>CSCI 5609 - Project</title>
-    
-    <link rel="stylesheet" href="jquery-jvectormap-2.0.1.css" type="text/css" media="screen"/>
-    <link rel="stylesheet" href="styles.css"/>
-    <script src="js/data-modification.js"></script>
-    <script src="js/interaction.js"></script>
-    <script src="js/linkedList.js"></script>
-    <script src="js/jquery.min.js" type="text/javascript"></script>
-    <script src="js/jquery-jvectormap-2.0.1.min.js"></script>
-    <script src="js/jquery-jvectormap-us-lcc-en.js"></script>
-    <script src="js/processing.js"></script>
-    <script src="js/stateLookup.js"></script>
-    <script src="js/utilities.js"></script>
-    <script type="javascript" src="js/processing.js"></script>
-	<script src="file:data/modis_2001_states.jsonp"></script>
+<head>
+  <title>CSCI 5609 - Project</title>
 
-	<script type="text/javascript">
-	var states = new Array(51);
-	var currState = "";
-	var selectedState = "";
-	var currentDataset = modis_2001_states;
-	var map;
+  <link rel="stylesheet" href="jquery-jvectormap-2.0.1.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="styles.css" />
+  <script src="js/data-modification.js"></script>
+  <script src="js/interaction.js"></script>
+  <script src="js/linkedList.js"></script>
+  <script src="js/jquery.min.js" type="text/javascript"></script>
+  <script src="js/jquery-jvectormap-2.0.1.min.js"></script>
+  <script src="js/jquery-jvectormap-us-lcc-en.js"></script>
+  <script src="js/processing.js"></script>
+  <script src="js/stateLookup.js"></script>
+  <script src="js/utilities.js"></script>
+  <script src="js/selections.js"></script>
+  <script type="javascript" src="js/processing.js"></script>
+  <script src="file:data/modis_2001_states.jsonp"></script>
 
-	var graphBoxes = new List();
-	var pjs;
-	var bound = false;
+  <script type="text/javascript">
+    var states = new Array(51);
+    var currState = "";
+    var selectedState = "";
+    var currentDataset = modis_2001_states;
+    var map;
 
-	bindJavascript();
+    var graphBoxes = new List();
+    var pjs;
+    var bound = false;
 
-	// printJSON(filterDateRange("2001-01-01", "2001-02-01"));
-	</script>
-  </head>
-  <body>
-    <div id="vmap" style="width: 800px; height: 400px;"></div>
-    <button> </button
-    <canvas id="code" data-processing-sources="code.pde"></canvas>
-    <script>
-	$(function(){
-		us_map = $('#vmap').vectorMap({
-		    map: 'us_lcc_en',
-		    regionsSelectable: true,
-		    showTooltip: true,
-		    selectedRegion: 'MO',
-		    onRegionOver: function(event, code)
-		    {
-		    	currState = nameLookup[code];
-		    },
-		    onRegionClick: function(event, code)
-		    {
-		    	selectedState = nameLookup[code];
-		    	//$('#vmap').vectorMap('select', code);
-		    	console.log(code);
-		    	if (states[code] == 1) {states[code] = 0;}
-		    	else {states[code] = 1;}
-		    	sendClick();
-		    	// console.log(selectedState);
-		    	// var stateEntires = filterByState(selectedState);
-		    	// console.log(stateEntires[2].scan);
-		    	// var avg = averages(stateEntires);
-		    	// console.log(avg.avg.State);
-		    },
-		});
-	});
-    </script>
-  </body>
+    bindJavascript();
+
+    //printJSON(filterDateRange("2001-01-01", "2001-02-01"));
+
+  </script>
+</head>
+<body>
+  <div id="vmap" style="width: 800px; height: 400px;"></div>
+  <div id="menus"><center>
+    X : 
+    <select id="xSelection" onchange="return selectEvent('xSelection');">
+    </select>
+    Y :
+    <select id="ySelection" onchange="return selectEvent('ySelection');">
+    </select>
+    Graph Type:
+    <select id="graphSelection" onchange="return selectEvent('graphSelection');">
+      <option> Line </option>
+      <option> Bar </option>
+      <option> Spiral </option>
+    </select>
+    <button type="button" onclick="updateGraph();">Update Selected Graph</button>
+    </center>
+  </div>
+  <canvas id="code" data-processing-sources="code.pde"></canvas>
+  <script>
+    $(function () {
+      us_map = $('#vmap').vectorMap({
+        map: 'us_lcc_en',
+        regionsSelectable: true,
+        showTooltip: true,
+        selectedRegion: 'MO',
+        onRegionOver: function (event, code) {
+          currState = nameLookup[code];
+        },
+        onRegionClick: function (event, code) {
+          selectedState = nameLookup[code];
+          //$('#vmap').vectorMap('select', code);
+          console.log(code);
+          if (states[code] == 1) { states[code] = 0; }
+          else { states[code] = 1; }
+          sendClick();
+          // console.log(selectedState);
+          // var stateEntires = filterByState(selectedState);
+          // console.log(stateEntires[2].scan);
+          // var avg = averages(stateEntires);
+          // console.log(avg.avg.State);
+        },
+      });
+    });
+
+    window.onload = selectionLoad;
+
+  </script>
+</body>
 </html>
