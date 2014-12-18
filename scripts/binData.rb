@@ -1,4 +1,3 @@
-require "geocoder"
 require "./csv_to_json"
 
 # Sample input: ruby binData.rb data/modis_2001_states.csv data/modis_2001_states.jsonp
