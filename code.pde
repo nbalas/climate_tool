@@ -35,17 +35,36 @@ void drawLineGraph(int x, int y, int w, int h, Object xObject, string xAttribute
   float xCount = 4;//(float) getSize(xObject) - 2;
   float xMax   = (float) getMax(xObject, xAttribute);
   float xMin   = (float) getMin(xObject, xAttribute);
-  float yMax   = (float) getMax(yObject, yAttribute);
-  float yMin   = (float) getMin(yObject, yAttribute);
+  // float yMax   = (float) getMax(yObject, yAttribute);
+  // float yMin   = (float) getMin(yObject, yAttribute);
+  float yMax = -99999, yMin = 99999;
   float thing  = x-w;
-  float widthScaler = (float)(w*2)/xCount;
-  float heightScaler = (float)(h*2)/(float)(yMax-yMin); // do we want the graph to scale between the min/max value? or not?
   int i = 0;
   float previous = null;
+  float value;
+  for(var date in xObject){
+    value = evaluateAggr(aggr.toLowerCase(), yObject, yAttribute, xObject[date]);
+    if(value < yMin){
+      yMin = value;
+    }
+    if(yMax < value){
+      yMax = value;
+    }
+  }
+
+  float widthScaler = (float)(w*2)/xCount;
+  float heightScaler = (float)(h*2)/(float)(yMax); // do we want the graph to scale between the min/max value? or not?
+
+  // console.log('yMax: ' + yMax + ' yMin: ' + yMin);
+  // console.log('widthScaler: ' + widthScaler + ' heightScaler: ' + heightScaler);
 
   for(var date in xObject){
-    float value = evaluateAggr(aggr.toLowerCase(), yObject, yAttribute, xObject[date]);
+    value = evaluateAggr(aggr.toLowerCase(), yObject, yAttribute, xObject[date]);
     int current = (y+h)-(value*heightScaler);
+    if(value == NaN){
+      value = 0;
+    }
+    console.log('current: ' + current + " value: " + value);
     if(previous != null){
       stroke(255);
       strokeWeight(1);
@@ -61,12 +80,22 @@ void drawIntensityBar(int x, int y, int w, int h, Object xObject, string xAttrib
   float xCount = 4;//(float) getSize(xObject) - 2;
   float xMax   = (float) getMax(xObject, xAttribute);
   float xMin   = (float) getMin(xObject, xAttribute);
-  float yMax   = (float) getMax(yObject, yAttribute);
-  float yMin   = (float) getMin(yObject, yAttribute);
+  float yMax = -99999, yMin = 99999;
   float thing  = x-w;
-  float widthScaler = (float)(w*2)/xCount;
-  float heightScaler = (float)(h*2)/(float)(yMax-yMin); // do we want the graph to scale between the min/max value? or not?
   int i = 0;
+
+    for(var date in xObject){
+    value = evaluateAggr(aggr.toLowerCase(), yObject, yAttribute, xObject[date]);
+    if(value < yMin){
+      yMin = value;
+    }
+    if(yMax < value){
+      yMax = value;
+    }
+  }
+
+  float widthScaler = (float)(w*2)/xCount;
+  float heightScaler = (float)(h*2)/(float)(yMax);
   
   for(var date in xObject){
     // histogram
@@ -91,14 +120,24 @@ void drawSingleSpiral(int x, int y, int w, int h, Object xObject, string xAttrib
   float degree = 360/xCount;
   float xMax   = (float) getMax(xObject, xAttribute);
   float xMin   = (float) getMin(xObject, xAttribute);
-  float yMax   = (float) getMax(yObject, yAttribute);
-  float yMin   = (float) getMin(yObject, yAttribute);
   float thing  = x-w;
-  float widthScaler = (float)(w*2)/xCount;
-  float heightScaler = (float)(h*2)/(float)(yMax-yMin); 
+  float yMax = -99999, yMin = 99999;
   float startRad = 0;
   strokeWeight(3);
   int i = 1;
+
+  for(var date in xObject){
+    value = evaluateAggr(aggr.toLowerCase(), yObject, yAttribute, xObject[date]);
+    if(value < yMin){
+      yMin = value;
+    }
+    if(yMax < value){
+      yMax = value;
+    }
+  }
+
+  float widthScaler = (float)(w*2)/xCount;
+  float heightScaler = (float)(h*2)/(float)(yMax);
   
   for(var date in xObject){
     // histogram
@@ -234,13 +273,15 @@ void draw(){
     
     //rect(item.data.x, item.data.y, item.data.w, item.data.h);
     //stroke(0,0,0);
-    if(item.data.selector){rect(item.data.x, item.data.y, item.data.w, item.data.h);}
+    if(item.data.selector){
+      rect(item.data.x, item.data.y, item.data.w, item.data.h);
+    }
     else{
-    rect(item.data.x, item.data.y, item.data.w, item.data.h);
-    fill(color(item.data.r,item.data.g,item.data.b,item.data.a));
-    item.data.drawSingleSpiral(item.data.x, item.data.y, 2*item.data.w, 2/*item.data.h*/);
-    //drawSingleSpiral(400, 200, 300, 2);
-  }
+      rect(item.data.x, item.data.y, item.data.w, item.data.h);
+      fill(color(item.data.r,item.data.g,item.data.b,item.data.a));
+      item.data.drawSingleSpiral(item.data.x, item.data.y, 2*item.data.w, 2/*item.data.h*/);
+      //drawSingleSpiral(400, 200, 300, 2);
+    }
   });
     // drawLineGraph(100, 350, 600, 300, currentMonths, "acq_date", stateEntires, "confidence", "Sum");
 
@@ -252,8 +293,6 @@ void mousePressed(){
     //   num = javascript.findStates(selectedState);
     // }
     //console.log("clicked at X:" + mouseX + " Y:" + mouseY);
-    drawSingleSpiral(200, 350, 200, 30, currentMonths, "acq_date", stateEntires, "confidence", "Count", 100);
-
 
     var current = graphBoxes.end;
     while(current !== null) {

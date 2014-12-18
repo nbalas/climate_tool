@@ -1,10 +1,10 @@
 var x = "acq_date";
 var y= "brightness";
-var graphType="Line";
+var graphType = 0;
 var year = "2001";
 var month1 = "01";
 var month2 = "12";
-var aggr = "Average";
+var aggr = "Sum";
 
 function selectionLoad() {
   //var select = document.getElementById("xSelection");
@@ -47,7 +47,7 @@ function selectEvent(menu) {
   }
   if (menu == "graphSelection") {
     console.log("updating graph type");
-    graphType = select.options[select.selectedIndex].text;
+    graphType = select.selectedIndex;
   }
   if (menu == "yearSelection") {
     console.log("updating year");
@@ -81,12 +81,23 @@ function updateGraph() {
     // String aggr
 
     var xp = 300; // center x position
-    var yp = 200; // center y position
+    var yp = 300; // center y position
     var w = 100; //graph width
     var h = 100; //graph height
     console.log("I am almost drawing!");
     console.log(aggr);
-    pjs.drawLineGraph(xp, yp, w, h, currentMonths_12, x, yObject, y, aggr);
+    switch (graphType){
+      case 0:
+        pjs.drawLineGraph(xp, yp, w, h, currentMonths_12, x, yObject, y, aggr);
+        break;
+      case 1:
+        pjs.drawSingleSpiral(xp, yp, w, h, currentMonths_12, x, yObject, y, aggr, 60);
+        break;
+      case 2:
+        pjs.drawIntensityBar(xp, yp, w, h, currentMonths_12, x, yObject, y, aggr);
+        break;
+    }
+
 
 
 
