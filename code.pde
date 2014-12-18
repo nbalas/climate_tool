@@ -68,6 +68,10 @@ void drawLineGraph(int x, int y, int w, int h, Object xObject, string xAttribute
     }
     //console.log('current: ' + current + " value: " + value);
     if(previous != null){
+      text(yMax,x-w-10,y-h);
+      text(yMin,x-w-10,y+h);
+      text(xMax,x+w,y+h+10);
+      text(xMin,x-w,y+h+10);
       stroke(255-data.r,255-data.g,255-data.b);
       strokeWeight(1);
       line((i-1)*(widthScaler)+(int)thing, previous, i*(widthScaler)+(int)thing,current); 
