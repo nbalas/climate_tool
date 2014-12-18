@@ -23,20 +23,21 @@ JavaScript javascript;
 
 // Line Graph
 void drawLineGraph(int x, int y, int w, int h) {
+  rect(x,y,w,h);
   fill(255,255,255);
   int spacer = 0;
-  float widthScaler = w/numberOfDays;
-  float heightScaler = h/maxFirePtDayCount;
+  float widthScaler = (2*w)/numberOfDays;
+  float heightScaler = (2*h)/maxFirePtDayCount;
   int i = 0;
   float previous = null;
 
   for(var z in dateFireCount){
-    int current = y-dateFireCount[z].count*heightScaler;
+    int current = (y+h)-dateFireCount[z].count*heightScaler;
     if(previous != null){
       stroke(255);
       strokeWeight(1);
 	  //using width + spacer to match the intensity bar sizing
-      line((i-1)*(widthScaler+spacer)+100, previous, i*(widthScaler+spacer)+100,current); 
+      line((i-1)*(widthScaler+spacer)+x-w, previous, i*(widthScaler+spacer)+x-w,current); 
     }
     previous = current;
     i++;
@@ -46,7 +47,7 @@ void drawLineGraph(int x, int y, int w, int h) {
 void drawIntensityBar(int x, int y, int w, int h) {
   fill(255,255,255);
   int spacer = 0;
-  float widthOfBar = w/numberOfDays;
+  float widthOfBar = (2*w)/numberOfDays;
   int i = 0;
   
   for(var z in dateFireCount){
@@ -55,7 +56,7 @@ void drawIntensityBar(int x, int y, int w, int h) {
     int color = 255*(fireCount/maxFirePtDayCount);
     fill(color,0,0);
     stroke(color,0,0);
-    rect(i*(widthOfBar+spacer)+x, y,widthOfBar-spacer, h);
+    rect(i*(widthOfBar+spacer)+x-w, y,widthOfBar-spacer, h);
 	
 	int positionInGraph = Math.round(i*(widthOfBar+spacer)+100);
 	if(mouseX == positionInGraph){
@@ -134,15 +135,15 @@ void expandGraphs() {
 }
 
 void testBoxCreate() {
-  var box1 = new graphBox(200,200,50,50);
+  var box1 = new graphBox(400,200,100,100);
   box1.r = 255;
   var box2 = new graphBox(350,200,50,50);
   box2.g = 255;
-  var box3 = new graphBox(500,200,50,50);
-  box3.b = 255;
+  /*var box3 = new graphBox(500,200,50,50);
+  box3.b = 255;*/
   graphBoxes.add(box1);
   graphBoxes.add(box2);
-  graphBoxes.add(box3);
+  //graphBoxes.add(box3);
   console.log("test boxes created");
 }
 
@@ -199,14 +200,19 @@ void draw(){
   fill(color(255,123,13), 128);
   text("Data: " + num + " elements of " + selectedState, 50, 90);
   
-  // drawLineGraph(100,350, 600, 300);
+  //drawLineGraph(100,350, 600, 300);
   // drawIntensityBar(100,380, 600, 10);
   //drawSingleSpiral(400, 200, 300, 2);
   graphBoxes.each(function(item) {
-    if(item.data.selected) {stroke(0, 102, 204);}
+    //if(item.data.selected) {stroke(0, 102, 204);}
+    
+    //rect(item.data.x, item.data.y, item.data.w, item.data.h);
+    //stroke(0,0,0);
+    if(item.data.selector){rect(item.data.x, item.data.y, item.data.w, item.data.h);}
+    else{
     fill(color(item.data.r,item.data.g,item.data.b,item.data.a));
-    rect(item.data.x, item.data.y, item.data.w, item.data.h);
-    stroke(0,0,0);
+    item.data.drawLineGraph(item.data.x, item.data.y, item.data.w, item.data.h);
+  }
   });
   
 }
@@ -215,12 +221,15 @@ void mousePressed(){
     // if(javascript != null){
     //   num = javascript.findStates(selectedState);
     // }
-    //console.log("clicked at X:" + mouseX + " Y:" + mouseY);
+   // console.log("clicked at X:" + mouseX + " Y:" + mouseY);
 
     var current = graphBoxes.end;
     while(current !== null) {
+      
       //current.data.selected = false;
+      //console.log(current.data.intersect(mouseX,mouseY));
       if(current.data.intersect(mouseX,mouseY) != null) { //hit something
+        //console.log("intersected");
         if(current.data.selected==false) {graphBoxes.each(function(item) {item.data.selected = false;});}
         //current.data.locked = true;
         current.data.selected = true;
@@ -280,6 +289,7 @@ void mouseDragged() {
         if(graphBoxes.selectCount>1) {
           graphBoxes.revEach(function(item) {
             if(item.data.selected) {
+              
             item.data.w += (mouseX-pmouseX)*graphBoxes.end.data.xTransform;
             item.data.h += (mouseY-pmouseY)*graphBoxes.end.data.yTransform;
             }
